@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:checked="true"
+            android:id="@+id/nav_inicio"
+            android:icon="@drawable/home_48"
+            android:title="@string/inicio" />
+        <item
+            android:id="@+id/nav_favoritos"
+            android:icon="@drawable/christmas_star_48"
+            android:title="@string/favoritos" />
+
+    </group>
+
+    <item android:title="@string/extras">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/compartir" />
+            <item
+                android:id="@+id/nav_ajustes"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="@string/ajustes" />
+            <item
+                android:id="@+id/nav_sesion"
+                android:icon="@drawable/shutdown_48"
+                android:title="@string/logout" />
+        </menu>
+    </item>
+
+</menu>
