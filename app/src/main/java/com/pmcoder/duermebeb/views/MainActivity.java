@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     private CollapsingToolbarLayout collToolLay;
     private TextView toolbarTitle;
+    private String fragmentStatus;
     private DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
     @Override
@@ -86,6 +87,27 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+        AppBarLayout appbar = (AppBarLayout) findViewById(R.id.mainappbar);
+        appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset == 0){
+                    if (fragmentStatus == "inicio"){
+                        collToolLay.setTitle(" ");
+                        toolbarTitle.setText(R.string.app_name);
+                    } else if (fragmentStatus == "favoritos") {
+                        collToolLay.setTitle(" ");
+                        toolbarTitle.setText(R.string.favTitle);
+                    }
+                }else{
+                    collToolLay.setTitle("Duerme bebé");
+                    toolbarTitle.setText(" ");
+                }
+            }
+        });
+
+
     }
 
     @Override
@@ -96,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         collToolLay.setTitle(" ");
 
         toolbarTitle = (TextView) findViewById(R.id.titletoolbar);
-        toolbarTitle.setText("Duerme bebé - Inicio");
+        toolbarTitle.setText(R.string.startTitle);
 
         fragmentManager.beginTransaction().add(R.id.container, new MainFragment()).commit();
 
@@ -130,21 +152,19 @@ public class MainActivity extends AppCompatActivity {
 
                 switch(item.getItemId()){
                     case R.id.nav_inicio:
+                        fragmentStatus = "inicio";
                         item.setChecked(true);
                         fragmentTransaction = true;
                         fragment = new MainFragment();
                         setSalir(0);
-                        collToolLay.setTitle(" ");
-                        toolbarTitle.setText("Duerme bebé - Inicio");
                         break;
 
                     case R.id.nav_favoritos:
+                        fragmentStatus = "favoritos";
                         item.setChecked(true);
                         fragmentTransaction = true;
                         fragment = new FavoritesFragment();
                         setSalir(0);
-                        collToolLay.setTitle(" ");
-                        toolbarTitle.setText(R.string.favTitle);
                         break;
 
                     case R.id.nav_share:
