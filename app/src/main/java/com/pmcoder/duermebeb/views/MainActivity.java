@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         userData.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.hasChildren()) {return;}
 
                 View v = MainActivity.navigationView.getHeaderView(0);
 
@@ -114,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Constant.persistence = true;
+
         collToolLay = (CollapsingToolbarLayout) findViewById(R.id.collaptoolbar);
         collToolLay.setTitle(" ");
 

@@ -6,7 +6,8 @@ import java.util.ArrayList;
 
 public class Constant {
 
-    public static Boolean PLAYING, LOADING = false;
+    public static Boolean PLAYING, LOADING;
+    public static Boolean persistence = false;
     public static String mailUser, nameUser, uid = "";
     public static int EXIT = 0;
 

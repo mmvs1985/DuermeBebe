@@ -30,23 +30,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText password;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseDatabase fbDatabase;
 
     @Override
     protected void onStart() {
         super.onStart();
 
         firebaseAuth.addAuthStateListener(mAuthListener);
-        try {
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        }catch (DatabaseException e){
-            e.printStackTrace();
-        }
 
     }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        if (!Constant.persistence) {
+            Log.i("persistence", "enabled");
+            Log.i("persistence", "false");
+            fbDatabase = FirebaseDatabase.getInstance();
+            fbDatabase.setPersistenceEnabled(true);
+        }
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -115,7 +118,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             Toast.makeText(getApplication(), "Bienvenid@!!",
-                                    Toast.LENGTH_SHORT).show();
+                                    Toast.LENGTH_LONG).show();
                         }else {
                             Snackbar.make(v, "Revisa tu conexión, se registran problemas técnicos",
                                     Snackbar.LENGTH_SHORT).show();

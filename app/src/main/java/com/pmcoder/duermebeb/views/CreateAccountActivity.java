@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -24,6 +26,7 @@ import com.pmcoder.duermebeb.constants.Constant;
 public class CreateAccountActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private FirebaseAuth.AuthStateListener mAuthListener;
     private TextInputEditText etEmail, etName, etPassword, etConfPassword;
     private DatabaseReference database = FirebaseDatabase.getInstance().getReference().child("users");
 
@@ -48,6 +51,22 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
         Button joinUs = (Button) findViewById(R.id.joinUs);
         joinUs.setOnClickListener(this);
 
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null){
+                    Log.i("SESION", "Sesión iniciada");
+                    Constant.uid = user.getUid();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    Toast.makeText(getApplicationContext(), "Iniciando Sesión",
+                            Toast.LENGTH_LONG).show();
+                }else{
+                    Log.i("SESION", "Sesión cerrada");
+                }
+            }
+        };
     }
 
     @Override
@@ -105,13 +124,8 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
                                 try {
                                     String uid = firebaseAuth.getCurrentUser().getUid();
                                     setUserDatabase(uid, name, email);
-                                    firebaseAuth.getCurrentUser().sendEmailVerification();
                                 } catch (Exception ignored) {
                                 }
-                                Toast.makeText(getApplicationContext(),
-                                        R.string.verify_identity,
-                                        Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                                 finish();
                             }
                             else {
@@ -145,5 +159,21 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
         database.setValue(uid);
         database.child(uid).child("userdata").child("name").setValue(name);
         database.child(uid).child("userdata").child("email").setValue(email);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        firebaseAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (firebaseAuth != null){
+            firebaseAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 }
