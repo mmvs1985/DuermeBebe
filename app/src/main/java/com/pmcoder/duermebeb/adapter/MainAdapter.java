@@ -39,7 +39,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
     private Activity activity;
     private int recurso;
     private ArrayList<ElementoPlaylist> cancion;
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
+    private DatabaseReference databaseReference = Constant.fbDatabase.getReference().child("users");
     private DatabaseReference userRef = databaseReference.child(Constant.uid).child("favorites");
     private StorageReference imgReference = FirebaseStorage.getInstance().getReference();
 
@@ -66,7 +66,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
                 .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Glide.with(activity).load(uri).diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.imgAlbum);
+                Glide.with(activity).load(uri).into(holder.imgAlbum);
             }
         });
         holder.progressBar.setVisibility(View.GONE);

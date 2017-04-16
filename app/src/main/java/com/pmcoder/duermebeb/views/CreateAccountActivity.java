@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.constants.Constant;
 
@@ -28,7 +27,7 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private FirebaseAuth.AuthStateListener mAuthListener;
     private TextInputEditText etEmail, etName, etPassword, etConfPassword;
-    private DatabaseReference database = FirebaseDatabase.getInstance().getReference().child("users");
+    private DatabaseReference database = Constant.fbDatabase.getReference().child("users");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

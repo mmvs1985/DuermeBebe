@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private CollapsingToolbarLayout collToolLay;
     private TextView toolbarTitle;
     private String fragmentStatus;
-    private DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference mDatabaseReference = Constant.fbDatabase.getReference();
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         DatabaseReference userData = mDatabaseReference.child("users").child(Constant.uid).child("userdata");
+
+        userData.keepSynced(true);
 
         userData.addValueEventListener(new ValueEventListener() {
             @Override
@@ -115,8 +117,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Constant.persistence = true;
 
         collToolLay = (CollapsingToolbarLayout) findViewById(R.id.collaptoolbar);
         collToolLay.setTitle(" ");
@@ -267,6 +267,9 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         EXIT +=1;
         if (EXIT == 2){
+            Intent i = new Intent(this, LoginActivity.class);
+            i.putExtra("SALIR", true);
+            startActivity(i);
             System.exit(0);
         }else {
             Toast.makeText(getApplicationContext(), "Presione otra vez para salir", Toast.LENGTH_SHORT)

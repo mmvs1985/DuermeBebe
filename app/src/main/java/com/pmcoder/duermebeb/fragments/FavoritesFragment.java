@@ -7,17 +7,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +35,7 @@ public class FavoritesFragment extends Fragment {
     private BroadcastReceiver broadcastReceiver;
     private IntentFilter intentFilter;
 
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
+    DatabaseReference databaseReference = Constant.fbDatabase.getReference().child("users");
     DatabaseReference favPlaylist = databaseReference.child(Constant.uid).child("favorites");
 
     @Override

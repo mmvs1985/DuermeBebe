@@ -27,7 +27,7 @@ public class MainFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference mDatabaseReference = Constant.fbDatabase.getReference();
     private DatabaseReference songList = mDatabaseReference.child("defSongs");
     private DatabaseReference favorites = mDatabaseReference.child("users").child(Constant.uid).child("favorites");
     private RecyclerView recyclerView;
@@ -53,6 +53,9 @@ public class MainFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        songList.keepSynced(true);
+        favorites.keepSynced(true);
 
         songList.addValueEventListener(new ValueEventListener() {
             @Override

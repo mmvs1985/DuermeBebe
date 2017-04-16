@@ -37,7 +37,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
     private int recurso;
     private ArrayList<ElementoPlaylist> cancion;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+    private DatabaseReference databaseReference = Constant.fbDatabase
             .getReference().child("users");
     private DatabaseReference favDatabase = databaseReference
             .child(Constant.uid).child("favorites");
@@ -68,7 +68,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
             @Override
             public void onSuccess(Uri uri) {
                 if(uri == null){return;}
-                Glide.with(activity).load(uri).diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.imgAlbum);
+                Glide.with(activity).load(uri).into(holder.imgAlbum);
             }
         });
         holder.songName.setOnClickListener(new View.OnClickListener() {

@@ -1,6 +1,7 @@
 package com.pmcoder.duermebeb.views;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,8 +20,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseException;
-import com.google.firebase.database.FirebaseDatabase;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.constants.Constant;
 
@@ -30,7 +29,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText password;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase fbDatabase;
 
     @Override
     protected void onStart() {
@@ -44,11 +42,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        if (!Constant.persistence) {
-            Log.i("persistence", "enabled");
-            Log.i("persistence", "false");
-            fbDatabase = FirebaseDatabase.getInstance();
-            fbDatabase.setPersistenceEnabled(true);
+        Intent i = this.getIntent();
+        Boolean exit = i.getBooleanExtra("SALIR", false);
+        if (exit){
+            System.exit(0);
         }
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -72,8 +69,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (user != null){
                     Log.i("SESION", "Sesión iniciada");
                     Constant.uid = user.getUid();
+                    if (!Constant.persistence){
+                        Constant.fbDatabase.setPersistenceEnabled(true);
+                    }
+                    Constant.persistence = true;
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    System.exit(0);
+                    finish();
                 }else{
                     Log.i("SESION", "Sesión cerrada");
                 }
@@ -137,6 +138,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
 
     }
+
+
 
     @Override
     public void onStop(){
