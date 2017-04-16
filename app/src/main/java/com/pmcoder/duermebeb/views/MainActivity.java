@@ -8,36 +8,23 @@ import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.*;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.*;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import android.view.*;
+import android.widget.*;
+import com.google.firebase.auth.*;
+import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.constants.Constant;
-import com.pmcoder.duermebeb.fragments.FavoritesFragment;
-import com.pmcoder.duermebeb.fragments.MainFragment;
+import com.pmcoder.duermebeb.fragments.*;
 import com.pmcoder.duermebeb.services.MediaPlayerMainService;
-import static com.pmcoder.duermebeb.R.drawable.circled_play_48;
-import static com.pmcoder.duermebeb.R.drawable.pause_48;
-import static com.pmcoder.duermebeb.R.drawable.shuffle_48;
-import static com.pmcoder.duermebeb.R.string.navigation_drawer_close;
-import static com.pmcoder.duermebeb.R.string.navigation_drawer_open;
+import static com.pmcoder.duermebeb.R.drawable.*;
+import static com.pmcoder.duermebeb.R.string.*;
 import static com.pmcoder.duermebeb.fragments.MainFragment.mainAdapter;
 import static com.pmcoder.duermebeb.services.MediaPlayerMainService.*;
 import static com.pmcoder.duermebeb.constants.Constant.*;
@@ -96,15 +83,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 if (verticalOffset == 0){
-                    if (fragmentStatus == "inicio"){
+                    if (fragmentStatus == getString(R.string.start)){
                         collToolLay.setTitle(" ");
                         toolbarTitle.setText(R.string.app_name);
-                    } else if (fragmentStatus == "favoritos") {
+                    } else if (fragmentStatus == getString(R.string.favoritos)) {
                         collToolLay.setTitle(" ");
                         toolbarTitle.setText(R.string.favTitle);
                     }
                 }else{
-                    collToolLay.setTitle("Duerme bebé");
+                    collToolLay.setTitle(getString(R.string.app_name));
                     toolbarTitle.setText(" ");
                 }
             }
@@ -156,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
                 switch(item.getItemId()){
                     case R.id.nav_inicio:
-                        fragmentStatus = "inicio";
+                        fragmentStatus = getString(R.string.start);
                         item.setChecked(true);
                         fragmentTransaction = true;
                         fragment = new MainFragment();
@@ -164,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case R.id.nav_favoritos:
-                        fragmentStatus = "favoritos";
+                        fragmentStatus = getString(R.string.favoritos);
                         item.setChecked(true);
                         fragmentTransaction = true;
                         fragment = new FavoritesFragment();
@@ -176,9 +163,9 @@ public class MainActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(Intent.ACTION_SEND);
                         intent.setType("text/plain");
-                        intent.putExtra(Intent.EXTRA_TEXT, "Descarga la mejor aplicación para dormir a tu bebé: " +
+                        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.download_best_app) +
                                 "https://play.google.com/store/apps/details?id=com.pmcoder.duermebeb");
-                        startActivity(Intent.createChooser(intent, "Compartir con"));
+                        startActivity(Intent.createChooser(intent, getString(R.string.share_with)));
 
                         break;
 
@@ -233,9 +220,23 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.play_pause_menu:
+                        if (fragmentStatus == getString(R.string.start)){
+                            if (mainListArray.size() < 1){
+                                Snackbar.make(getCurrentFocus(), R.string.list_empty,
+                                        Snackbar.LENGTH_LONG).show();
+                                break;
+                            }
+                        } else if (fragmentStatus == getString(R.string.favoritos)) {
+                            if (favoritesArray.size() < 1){
+                                Snackbar.make(getCurrentFocus(), R.string.list_empty,
+                                        Snackbar.LENGTH_LONG).show();
+                                break;
+                            }
+                        }
+
                         int i = (int) Math.floor(Math.random() * mainAdapter.getItemCount());
                         if (mMPService.mp == null){
-                            Toast.makeText(getApplicationContext(),"Modo aleatorio iniciado",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.shuffle_starts,Toast.LENGTH_SHORT).show();
                             if (Constant.viewHolder != null){
                                 Constant.viewHolder.setVisibility(View.GONE);
                             }
@@ -260,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void proxim (){
-        Toast.makeText(getApplication(), "Proximamente", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplication(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -272,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(i);
             System.exit(0);
         }else {
-            Toast.makeText(getApplicationContext(), "Presione otra vez para salir", Toast.LENGTH_SHORT)
+            Toast.makeText(getApplicationContext(), R.string.press_again_2_exit, Toast.LENGTH_SHORT)
                     .show();
         }
     }

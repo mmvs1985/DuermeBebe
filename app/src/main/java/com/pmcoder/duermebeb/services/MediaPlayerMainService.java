@@ -1,20 +1,16 @@
 package com.pmcoder.duermebeb.services;
 
 import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
+import android.content.*;
+import android.media.*;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.android.gms.tasks.*;
+import com.google.firebase.storage.*;
 import com.pmcoder.duermebeb.constants.Constant;
 import java.io.IOException;
 import static com.pmcoder.duermebeb.constants.Constant.*;

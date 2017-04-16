@@ -39,4 +39,11 @@
     <string name="favTitle">Favoritos</string>
     <string name="hi">Hola</string>
     <string name="startTitle">Duerme bebé - Inicio</string>
+    <string name="start">inicio</string>
+    <string name="list_empty">Lista vacía</string>
+    <string name="shuffle_starts">Modo aleatorio iniciado</string>
+    <string name="coming_soon">Próximamente</string>
+    <string name="press_again_2_exit">Presione otra vez para salir</string>
+    <string name="download_best_app">Descarga la mejor aplicación para dormir a tu bebé:</string>
+    <string name="share_with">Compartir con</string>
 </resources>
