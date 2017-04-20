@@ -9,7 +9,7 @@ public class Constant {
 
     public static Boolean PLAYING, LOADING = false;
     public static Boolean persistence = false;
-    public static String mailUser, nameUser, uid = "";
+    public static String mailUser, nameUser, uid = "", infoArtist, infoSong, youtube, soundcloud, web;
     public static int EXIT = 0;
     public static FirebaseDatabase fbDatabase = FirebaseDatabase.getInstance();
 

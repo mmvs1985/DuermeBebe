@@ -12,6 +12,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.*;
 import com.google.firebase.auth.*;
+import com.google.firebase.crash.FirebaseCrash;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.constants.Constant;
 
@@ -33,12 +34,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        Intent i = this.getIntent();
-        Boolean exit = i.getBooleanExtra("SALIR", false);
-        if (exit){
-            System.exit(0);
-        }
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -62,7 +57,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Log.i("SESION", "Sesión iniciada");
                     Constant.uid = user.getUid();
                     if (!Constant.persistence){
-                        Constant.fbDatabase.setPersistenceEnabled(true);
+                        try {
+                            Constant.fbDatabase.setPersistenceEnabled(true);
+                        }catch (Exception e){
+                            FirebaseCrash.report(e.fillInStackTrace());
+                        }
                     }
                     Constant.persistence = true;
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));

@@ -30,7 +30,7 @@
 
         <receiver android:name=".views.MainActivity$PlayReceiver">
             <intent-filter>
-                <action android:name="AJUSTAR_REPRODUCTOR" />
+                <action android:name="BROADCAST_RECEIVER" />
             </intent-filter>
         </receiver>
 

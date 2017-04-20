@@ -13,6 +13,7 @@ import com.google.firebase.database.*;
 import com.google.firebase.storage.*;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.constants.Constant;
+import com.pmcoder.duermebeb.interfaces.Communicator;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import java.util.ArrayList;
 
@@ -31,6 +32,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
     private DatabaseReference favDatabase = databaseReference
             .child(Constant.uid).child("favorites");
     private StorageReference imgReference = FirebaseStorage.getInstance().getReference();
+    private Communicator comm;
 
     public FavoritesAdapter(ArrayList<ElementoPlaylist> cancion, Activity activity, int recurso) {
         this.cancion = cancion;
@@ -60,7 +62,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
                 Glide.with(activity).load(uri).into(holder.imgAlbum);
             }
         });
-        holder.songName.setOnClickListener(new View.OnClickListener() {
+        holder.songData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (LOADING){return;}
@@ -68,31 +70,6 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
                 holder.progressBar.setVisibility(View.VISIBLE);
                 Constant.viewHolder = holder.progressBar;
                 mMPService.setPlaying(song);
-            }
-        });
-        holder.artistName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (LOADING){return;}
-                String song = elementoPlaylist.getUrlsong();
-
-                holder.progressBar.setVisibility(View.VISIBLE);
-                Constant.viewHolder = holder.progressBar;
-                mMPService.setPlaying(song);
-
-            }
-        });
-        holder.imgAlbum.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                if (LOADING){return;}
-                String song = elementoPlaylist.getUrlsong();
-
-                holder.progressBar.setVisibility(View.VISIBLE);
-                Constant.viewHolder = holder.progressBar;
-                mMPService.setPlaying(song);
-
-
             }
         });
 
@@ -121,24 +98,39 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
             }
         });
 
+        holder.help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                comm = (Communicator) activity;
+                Constant.web = elementoPlaylist.getWeb();
+                Constant.youtube = elementoPlaylist.getYoutube();
+                Constant.soundcloud = elementoPlaylist.getSoundcloud();
+                comm.respond(elementoPlaylist.getArtist(), elementoPlaylist.getName());
+            }
+        });
+
     }
 
     public class PictureViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView imgAlbum;
+        private ImageView imgAlbum, help;
         private TextView artistName;
         private TextView songName;
         private CheckBox remove;
         private ProgressBar progressBar;
+        private LinearLayout songData;
 
         public PictureViewHolder(View itemView) {
             super(itemView);
 
             imgAlbum = (ImageView) itemView.findViewById(R.id.fav_imgrecycler);
+            help = (ImageView) itemView.findViewById(R.id.help);
             artistName = (TextView) itemView.findViewById(R.id.fav_artistName);
             songName = (TextView) itemView.findViewById(R.id.fav_songName);
             remove = (CheckBox) itemView.findViewById(R.id.remove);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progsongloading);
+            songData = (LinearLayout) itemView.findViewById(R.id.favcardinfo);
 
         }
     }

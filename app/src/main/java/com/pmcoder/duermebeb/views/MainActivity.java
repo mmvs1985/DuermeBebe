@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.*;
 import android.support.v4.app.*;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.constants.Constant;
 import com.pmcoder.duermebeb.fragments.*;
+import com.pmcoder.duermebeb.interfaces.Communicator;
 import com.pmcoder.duermebeb.services.MediaPlayerMainService;
 import static com.pmcoder.duermebeb.R.drawable.*;
 import static com.pmcoder.duermebeb.R.string.*;
@@ -29,19 +31,22 @@ import static com.pmcoder.duermebeb.fragments.MainFragment.mainAdapter;
 import static com.pmcoder.duermebeb.services.MediaPlayerMainService.*;
 import static com.pmcoder.duermebeb.constants.Constant.*;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Communicator{
 
-    private FragmentManager fragmentManager = getSupportFragmentManager();
     public static NavigationView navigationView;
     public static MediaPlayerMainService mMPService;
     private static BottomNavigationView bNView;
+    private AppBarLayout appbar;
+    private NestedScrollView nScrollView;
+    private CollapsingToolbarLayout collToolLay;
+    private FragmentManager fragmentManager = getSupportFragmentManager();
     private BroadcastReceiver mReceiver;
     private IntentFilter intentFilter;
     private ActionBarDrawerToggle toggle;
     private DrawerLayout drawer;
-    private CollapsingToolbarLayout collToolLay;
     private TextView toolbarTitle;
     private String fragmentStatus;
+    private InfoFragment infoFrag;
     private DatabaseReference mDatabaseReference = Constant.fbDatabase.getReference();
 
     @Override
@@ -78,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AppBarLayout appbar = (AppBarLayout) findViewById(R.id.mainappbar);
         appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -105,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        appbar = (AppBarLayout) findViewById(R.id.mainappbar);
+
+        nScrollView = (NestedScrollView) findViewById(R.id.nestedscroll);
+
         collToolLay = (CollapsingToolbarLayout) findViewById(R.id.collaptoolbar);
         collToolLay.setTitle(" ");
 
@@ -116,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         mMPService = new MediaPlayerMainService(getApplication());
 
         mReceiver = new PlayReceiver();
-        intentFilter= new IntentFilter("AJUSTAR_REPRODUCTOR");
+        intentFilter= new IntentFilter("BROADCAST_RECEIVER");
 
         Intent mediaService = new Intent(this, MediaPlayerMainService.class);
         startService(mediaService);
@@ -145,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_inicio:
                         fragmentStatus = getString(R.string.start);
                         item.setChecked(true);
+                        appbar.setExpanded(true);
                         fragmentTransaction = true;
                         fragment = new MainFragment();
                         setSalir(0);
@@ -153,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_favoritos:
                         fragmentStatus = getString(R.string.favoritos);
                         item.setChecked(true);
+                        appbar.setExpanded(true);
                         fragmentTransaction = true;
                         fragment = new FavoritesFragment();
                         setSalir(0);
@@ -160,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.nav_share:
                         setSalir(0);
-
                         Intent intent = new Intent(Intent.ACTION_SEND);
                         intent.setType("text/plain");
                         intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.download_best_app) +
@@ -266,12 +275,27 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+        if (fragmentStatus == "infoFragment"){
+            fragmentManager
+                    .beginTransaction()
+                    .remove(infoFrag)
+                    .commit();
+
+            fragmentStatus = " ";
+
+            appbar.setExpanded(true);
+            nScrollView.setNestedScrollingEnabled(true);
+            return;
+        }
+
         EXIT +=1;
         if (EXIT == 2){
-            Intent i = new Intent(this, LoginActivity.class);
-            i.putExtra("SALIR", true);
-            startActivity(i);
-            System.exit(0);
+            finish();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }else {
             Toast.makeText(getApplicationContext(), R.string.press_again_2_exit, Toast.LENGTH_SHORT)
                     .show();
@@ -309,6 +333,34 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    @Override
+    public void respond(String autor, String song) {
+        appbar.setExpanded(false);
+        nScrollView.setNestedScrollingEnabled(false);
+
+        Constant.infoArtist = autor;
+        Constant.infoSong = song;
+
+        infoFrag = new InfoFragment();
+
+        fragmentManager.beginTransaction()
+                .add(R.id.container, infoFrag)
+                .setTransition(FragmentTransaction.TRANSIT_ENTER_MASK)
+                .commit();
+
+        drawer.closeDrawers();
+
+        fragmentStatus = "infoFragment";
+    }
+
+    @Override
+    public void closeNotificationFragment() {
+
+        nScrollView.setNestedScrollingEnabled(true);
+        setSalir(0);
+
+    }
+
     public static class PlayReceiver extends BroadcastReceiver{
 
         public PlayReceiver(){}
@@ -318,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            mainActivity.playPause(intent.getBooleanExtra("play", false));
+                mainActivity.playPause(intent.getBooleanExtra("play", false));
 
         }
     }

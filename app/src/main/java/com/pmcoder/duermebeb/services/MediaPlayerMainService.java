@@ -149,7 +149,7 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
     }
 
     public void playBroadcastSender(Boolean b){
-        Intent i = new Intent("AJUSTAR_REPRODUCTOR");
+        Intent i = new Intent("BROADCAST_RECEIVER");
         i.putExtra("play", b);
         try {
             ctx.sendBroadcast(i);

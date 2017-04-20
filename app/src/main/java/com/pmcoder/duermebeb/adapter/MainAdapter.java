@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.*;
 import com.google.firebase.storage.*;
 import com.pmcoder.duermebeb.R;
+import com.pmcoder.duermebeb.interfaces.Communicator;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import com.pmcoder.duermebeb.constants.Constant;
 import java.util.*;
@@ -26,6 +27,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
     private DatabaseReference databaseReference = Constant.fbDatabase.getReference().child("users");
     private DatabaseReference userRef = databaseReference.child(Constant.uid).child("favorites");
     private StorageReference imgReference = FirebaseStorage.getInstance().getReference();
+    private Communicator comm;
 
     public MainAdapter(ArrayList<ElementoPlaylist> cancion, Activity activity, int recurso) {
         this.cancion = cancion;
@@ -54,7 +56,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
             }
         });
         holder.progressBar.setVisibility(View.GONE);
-        holder.songName.setOnClickListener(new View.OnClickListener() {
+
+        holder.mainInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (LOADING){return;}
@@ -63,30 +66,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
                 holder.progressBar.setVisibility(View.VISIBLE);
                 Constant.viewHolder = holder.progressBar;
                 mMPService.setPlaying(song);
-            }
-        });
-        holder.artistName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (LOADING){return;}
-                String song = elementoPlaylist.getUrlsong();
-
-                holder.progressBar.setVisibility(View.VISIBLE);
-                Constant.viewHolder = holder.progressBar;
-                mMPService.setPlaying(song);
-            }
-        });
-        holder.imgAlbum.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                if (LOADING){return;}
-                String song = elementoPlaylist.getUrlsong();
-
-                holder.progressBar.setVisibility(View.VISIBLE);
-                Constant.viewHolder = holder.progressBar;
-                mMPService.setPlaying(song);
-
-
             }
         });
         holder.fab.setChecked(elementoPlaylist.isLikeState());
@@ -99,6 +78,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
                     mymap.put("artist", elementoPlaylist.getArtist());
                     mymap.put("urlsong", elementoPlaylist.getUrlsong());
                     mymap.put("urlimg", elementoPlaylist.getUrlimg());
+                    mymap.put("soundcloud", elementoPlaylist.getSoundcloud());
+                    mymap.put("web", elementoPlaylist.getWeb());
+                    mymap.put("youtube", elementoPlaylist.getYoutube());
                     mymap.put("like", "true");
 
                     userRef.child(elementoPlaylist.getName()).setValue(mymap)
@@ -130,15 +112,27 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
 
             }
         });
+
+        holder.helpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                comm = (Communicator) activity;
+                Constant.web = elementoPlaylist.getWeb();
+                Constant.youtube = elementoPlaylist.getYoutube();
+                Constant.soundcloud = elementoPlaylist.getSoundcloud();
+                comm.respond(elementoPlaylist.getArtist(), elementoPlaylist.getName());
+            }
+        });
     }
 
     public class PictureViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView imgAlbum;
+        private ImageView imgAlbum, helpButton;
         private TextView artistName;
         private TextView songName;
         private CheckBox fab;
         private ProgressBar progressBar;
+        private LinearLayout mainInfo;
 
         public PictureViewHolder(View itemView) {
             super(itemView);
@@ -148,6 +142,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
             songName = (TextView) itemView.findViewById(R.id.songName);
             fab = (CheckBox) itemView.findViewById(R.id.fab);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progsongloading);
+            mainInfo = (LinearLayout) itemView.findViewById(R.id.maincardinfo);
+            helpButton = (ImageView) itemView.findViewById(R.id.help);
 
 
         }

@@ -57,13 +57,24 @@ public class FavoritesFragment extends Fragment {
                 Constant.databaseFavArray.clear();
 
                 for (DataSnapshot songlist: dataSnapshot.getChildren()){
+
+                    if (songlist.child("name").getValue() == null) return;
                     String name = songlist.child("name").getValue().toString();
+                    if (songlist.child("artist").getValue() == null) return;
                     String artist = songlist.child("artist").getValue().toString();
+                    if (songlist.child("urlsong").getValue() == null) return;
                     String urlSong = songlist.child("urlsong").getValue().toString();
+                    if (songlist.child("urlimg").getValue() == null) return;
                     String urlImg = songlist.child("urlimg").getValue().toString();
+                    if (songlist.child("web").getValue() == null) return;
+                    String web = songlist.child("web").getValue().toString();
+                    if (songlist.child("soundcloud").getValue() == null) return;
+                    String soundCloud = songlist.child("soundcloud").getValue().toString();
+                    if (songlist.child("youtube").getValue() == null) return;
+                    String youtube = songlist.child("youtube").getValue().toString();
 
                     Constant.databaseFavArray
-                            .add(new ElementoPlaylist(artist, name, urlSong, urlImg));
+                            .add(new ElementoPlaylist(artist, name, urlSong, urlImg, soundCloud, youtube, web));
                 }
                 if (!Constant.favoritesArray.equals(Constant.databaseFavArray)){
                     Constant.favoritesArray.clear();

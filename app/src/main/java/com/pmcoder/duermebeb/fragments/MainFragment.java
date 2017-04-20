@@ -59,13 +59,23 @@ public class MainFragment extends Fragment {
 
                 for (DataSnapshot songlist: dataSnapshot.getChildren()) {
 
+                    if (songlist.child("name").getValue() == null) return;
                     String songName = songlist.child("name").getValue().toString();
+                    if (songlist.child("artist").getValue() == null) return;
                     String artist = songlist.child("artist").getValue().toString();
+                    if (songlist.child("urlsong").getValue() == null) return;
                     String urlSong = songlist.child("urlsong").getValue().toString();
+                    if (songlist.child("urlimg").getValue() == null) return;
                     String urlImg = songlist.child("urlimg").getValue().toString();
+                    if (songlist.child("web").getValue() == null) return;
+                    String web = songlist.child("web").getValue().toString();
+                    if (songlist.child("soundcloud").getValue() == null) return;
+                    String soundCloud = songlist.child("soundcloud").getValue().toString();
+                    if (songlist.child("youtube").getValue() == null) return;
+                    String youtube = songlist.child("youtube").getValue().toString();
 
 
-                    Constant.dataBaseMainArray.add(new ElementoPlaylist(artist, songName, urlSong, "false", urlImg));
+                    Constant.dataBaseMainArray.add(new ElementoPlaylist(artist, songName, urlSong, "false", urlImg, soundCloud, youtube, web));
                 }
 
                 if (!Constant.mainListArray.equals(Constant.dataBaseMainArray)){
