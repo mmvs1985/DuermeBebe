@@ -9,7 +9,10 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+
 import com.google.android.gms.tasks.*;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.storage.*;
 import com.pmcoder.duermebeb.constants.Constant;
 import java.io.IOException;
@@ -44,7 +47,13 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
     public void preparePlaying(String song){
 
         if (!Constant.funcionaInternet()){
-            Snackbar.make(Constant.viewHolder, "Revisa tu conexión a Internet", Snackbar.LENGTH_LONG).show();
+            try{
+                Snackbar.make(Constant.viewHolder, "Revisa tu conexión a Internet", Snackbar.LENGTH_LONG).show();
+                return;
+            }catch (Exception e){
+                FirebaseCrash.report(e.fillInStackTrace());
+            }
+            Toast.makeText(ctx, "Revisa tu conexión a Internet", Toast.LENGTH_LONG).show();
             return;
         }
 
