@@ -231,15 +231,13 @@ public class MainActivity extends AppCompatActivity implements Communicator{
                     case R.id.play_pause_menu:
                         if (fragmentStatus == getString(R.string.start)){
                             if (mainListArray.size() < 1){
-                                Constant.viewHolder = getCurrentFocus();
-                                Snackbar.make(getCurrentFocus(), R.string.list_empty,
+                                Snackbar.make(getCurrentFocus().findFocus(), R.string.list_empty,
                                         Snackbar.LENGTH_LONG).show();
                                 break;
                             }
                         } else if (fragmentStatus == getString(R.string.favoritos)) {
-                            Constant.viewHolder = getCurrentFocus();
                             if (favoritesArray.size() < 1){
-                                Snackbar.make(getCurrentFocus(), R.string.list_empty,
+                                Snackbar.make(getCurrentFocus().findFocus(), R.string.list_empty,
                                         Snackbar.LENGTH_LONG).show();
                                 break;
                             }

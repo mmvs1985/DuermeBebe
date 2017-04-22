@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.pmcoder.duermebeb.views.StartActivity"
+    android:background="@color/colorPrimary">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo_transp"
+            android:padding="30dp"
+            android:layout_gravity="top"/>
+
+        <TextView
+            android:id="@+id/startmaintitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:textColor="@android:color/white"
+            android:textSize="45sp"
+            android:layout_marginBottom="60dp"
+            />
+
+    </FrameLayout>
+
+</android.support.design.widget.CoordinatorLayout>

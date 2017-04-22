@@ -55,7 +55,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null){
                     Log.i("SESION", "Sesión iniciada");
-                    Constant.uid = user.getUid();
                     if (!Constant.persistence){
                         try {
                             Constant.fbDatabase.setPersistenceEnabled(true);

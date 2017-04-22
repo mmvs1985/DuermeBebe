@@ -8,24 +8,29 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/main_icon"
-        android:supportsRtl="true"
         android:label="Duerme Bebé"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".views.LoginActivity"
+        <activity android:name=".views.StartActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".views.LoginActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
         </activity>
         <activity
             android:name=".views.MainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
-
         </activity>
 
         <receiver android:name=".views.MainActivity$PlayReceiver">
@@ -37,7 +42,6 @@
         <service
             android:name=".services.MediaPlayerMainService"
             android:enabled="true">
-
         </service>
 
         <activity
@@ -48,13 +52,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".views.LoginActivity" />
         </activity>
-        <activity android:name=".views.ResetPasswordActivity"
-            android:windowSoftInputMode="stateVisible"
-            android:screenOrientation="portrait">
+        <activity
+            android:name=".views.ResetPasswordActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".views.LoginActivity"
-                />
+                android:value=".views.LoginActivity" />
         </activity>
     </application>
 

@@ -48,12 +48,13 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
 
         if (!Constant.funcionaInternet()){
             try{
-                Snackbar.make(Constant.viewHolder, "Revisa tu conexión a Internet", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(Constant.viewHolder.getRootView(), "Revisa tu conexión a Internet", Snackbar.LENGTH_LONG).show();
                 return;
             }catch (Exception e){
                 FirebaseCrash.report(e.fillInStackTrace());
             }
             Toast.makeText(ctx, "Revisa tu conexión a Internet", Toast.LENGTH_LONG).show();
+            playBroadcastSender(false);
             return;
         }
 
