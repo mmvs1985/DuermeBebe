@@ -44,6 +44,12 @@ public class ElementoPlaylist {
         this.urlimg = urlimg;
     }
 
+    public ElementoPlaylist(String soundcloud, String youtube, String web) {
+        this.soundcloud = soundcloud;
+        this.youtube = youtube;
+        this.web = web;
+    }
+
     public String getArtist() {
         return artist;
     }

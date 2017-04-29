@@ -18,6 +18,7 @@ import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import java.util.ArrayList;
 
 import static com.pmcoder.duermebeb.constants.Constant.LOADING;
+import static com.pmcoder.duermebeb.constants.Constant.artistChannelDB;
 import static com.pmcoder.duermebeb.views.MainActivity.mMPService;
 
 
@@ -103,9 +104,17 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
             public void onClick(View v) {
 
                 comm = (Communicator) activity;
-                Constant.web = elementoPlaylist.getWeb();
-                Constant.youtube = elementoPlaylist.getYoutube();
-                Constant.soundcloud = elementoPlaylist.getSoundcloud();
+
+                if (!artistChannelDB.containsKey(elementoPlaylist.getArtist())){
+                    Toast.makeText(activity, R.string.no_artist_data, Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
+
+                Constant.web = artistChannelDB.get(elementoPlaylist.getArtist()).getWeb();
+                Constant.youtube = artistChannelDB.get(elementoPlaylist.getArtist()).getYoutube();
+                Constant.soundcloud = artistChannelDB.get(elementoPlaylist.getArtist()).getSoundcloud();
+
                 comm.respond(elementoPlaylist.getArtist(), elementoPlaylist.getName());
             }
         });

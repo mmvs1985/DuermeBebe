@@ -16,6 +16,7 @@ import com.pmcoder.duermebeb.constants.Constant;
 import java.util.*;
 
 import static com.pmcoder.duermebeb.constants.Constant.LOADING;
+import static com.pmcoder.duermebeb.constants.Constant.artistChannelDB;
 import static com.pmcoder.duermebeb.views.MainActivity.mMPService;
 
 
@@ -78,9 +79,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
                     mymap.put("artist", elementoPlaylist.getArtist());
                     mymap.put("urlsong", elementoPlaylist.getUrlsong());
                     mymap.put("urlimg", elementoPlaylist.getUrlimg());
-                    mymap.put("soundcloud", elementoPlaylist.getSoundcloud());
-                    mymap.put("web", elementoPlaylist.getWeb());
-                    mymap.put("youtube", elementoPlaylist.getYoutube());
                     mymap.put("like", "true");
 
                     userRef.child(elementoPlaylist.getName()).setValue(mymap)
@@ -117,9 +115,16 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
             @Override
             public void onClick(View v) {
                 comm = (Communicator) activity;
-                Constant.web = elementoPlaylist.getWeb();
-                Constant.youtube = elementoPlaylist.getYoutube();
-                Constant.soundcloud = elementoPlaylist.getSoundcloud();
+
+                if (!artistChannelDB.containsKey(elementoPlaylist.getArtist())){
+                    Toast.makeText(activity, R.string.no_artist_data, Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
+
+                Constant.web = artistChannelDB.get(elementoPlaylist.getArtist()).getWeb();
+                Constant.youtube = artistChannelDB.get(elementoPlaylist.getArtist()).getYoutube();
+                Constant.soundcloud = artistChannelDB.get(elementoPlaylist.getArtist()).getSoundcloud();
                 comm.respond(elementoPlaylist.getArtist(), elementoPlaylist.getName());
             }
         });
@@ -153,4 +158,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
     public int getItemCount() {
         return cancion.size();
     }
+
+
 }

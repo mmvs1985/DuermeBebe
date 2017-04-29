@@ -24,6 +24,7 @@ import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.constants.Constant;
 import com.pmcoder.duermebeb.fragments.*;
 import com.pmcoder.duermebeb.interfaces.Communicator;
+import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import com.pmcoder.duermebeb.services.MediaPlayerMainService;
 import static com.pmcoder.duermebeb.R.drawable.*;
 import static com.pmcoder.duermebeb.R.string.*;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements Communicator{
     private String fragmentStatus;
     private InfoFragment infoFrag;
     private DatabaseReference mDatabaseReference = Constant.fbDatabase.getReference();
+    private DatabaseReference mArtistChannel = mDatabaseReference.child("artist-channel");
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -101,6 +103,32 @@ public class MainActivity extends AppCompatActivity implements Communicator{
             }
         });
 
+        mArtistChannel.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getChildren() == null) return;
+                for (DataSnapshot artist: dataSnapshot.getChildren()){
+                    if (artist.child("youtube").getValue().toString() == null) return;
+                    String youtube = artist.child("youtube").getValue().toString();
+                    if (artist.child("soundcloud").getValue().toString() == null) return;
+                    String soundCloud = artist.child("soundcloud").getValue().toString();
+                    if (artist.child("web").getValue().toString() == null) return;
+                    String web= artist.child("web").getValue().toString();
+
+                    Constant.artistSyncDB.put(artist.getKey(), new ElementoPlaylist(soundCloud, youtube, web));
+
+                }
+                if(artistChannelDB != artistSyncDB){
+                    artistChannelDB = artistSyncDB;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
