@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.*;
@@ -15,9 +17,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
+
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.*;
 import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
@@ -26,13 +31,19 @@ import com.pmcoder.duermebeb.fragments.*;
 import com.pmcoder.duermebeb.interfaces.Communicator;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import com.pmcoder.duermebeb.services.MediaPlayerMainService;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import static com.pmcoder.duermebeb.R.drawable.*;
 import static com.pmcoder.duermebeb.R.string.*;
 import static com.pmcoder.duermebeb.fragments.MainFragment.mainAdapter;
 import static com.pmcoder.duermebeb.services.MediaPlayerMainService.*;
 import static com.pmcoder.duermebeb.constants.Constant.*;
 
-public class MainActivity extends AppCompatActivity implements Communicator{
+public class MainActivity extends AppCompatActivity implements Communicator, View.OnClickListener{
 
     public static NavigationView navigationView;
     public static MediaPlayerMainService mMPService;
@@ -48,89 +59,9 @@ public class MainActivity extends AppCompatActivity implements Communicator{
     private TextView toolbarTitle;
     private String fragmentStatus;
     private InfoFragment infoFrag;
+    private ImageView profilePicture;
     private DatabaseReference mDatabaseReference = Constant.fbDatabase.getReference();
     private DatabaseReference mArtistChannel = mDatabaseReference.child("artist-channel");
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        toggle.syncState();
-
-        DatabaseReference userData = mDatabaseReference.child("users").child(Constant.uid).child("userdata");
-
-        userData.keepSynced(true);
-
-        userData.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.hasChildren()) {return;}
-
-                View v = MainActivity.navigationView.getHeaderView(0);
-
-                Constant.nameUser = dataSnapshot.child("name").getValue().toString();
-                Constant.mailUser = dataSnapshot.child("email").getValue().toString();
-
-                Log.i("user", Constant.nameUser + " " + Constant.mailUser);
-
-                TextView username = (TextView) v.findViewById(R.id.usernavname);
-                TextView mail = (TextView) v.findViewById(R.id.usernavmail);
-
-                String saludo = getString(R.string.hi) + " " + Constant.nameUser;
-                username.setText(saludo);
-                mail.setText(Constant.mailUser);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-        appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (verticalOffset == 0){
-                    if (fragmentStatus == getString(R.string.start)){
-                        collToolLay.setTitle(" ");
-                        toolbarTitle.setText(R.string.app_name);
-                    } else if (fragmentStatus == getString(R.string.favoritos)) {
-                        collToolLay.setTitle(" ");
-                        toolbarTitle.setText(R.string.favTitle);
-                    }
-                }else{
-                    collToolLay.setTitle(getString(R.string.app_name));
-                    toolbarTitle.setText(" ");
-                }
-            }
-        });
-
-        mArtistChannel.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getChildren() == null) return;
-                for (DataSnapshot artist: dataSnapshot.getChildren()){
-                    if (artist.child("youtube").getValue().toString() == null) return;
-                    String youtube = artist.child("youtube").getValue().toString();
-                    if (artist.child("soundcloud").getValue().toString() == null) return;
-                    String soundCloud = artist.child("soundcloud").getValue().toString();
-                    if (artist.child("web").getValue().toString() == null) return;
-                    String web= artist.child("web").getValue().toString();
-
-                    Constant.artistSyncDB.put(artist.getKey(), new ElementoPlaylist(soundCloud, youtube, web));
-
-                }
-                if(artistChannelDB != artistSyncDB){
-                    artistChannelDB = artistSyncDB;
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,6 +164,99 @@ public class MainActivity extends AppCompatActivity implements Communicator{
         });
 
         bNView = (BottomNavigationView) findViewById(R.id.main_bottomnavigation);
+
+        profilePicture = (ImageView) navigationView
+                .getHeaderView(0)
+                .findViewById(R.id.imgprofile);
+        profilePicture.setOnClickListener(this);
+
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        toggle.syncState();
+
+        DatabaseReference userData = mDatabaseReference.child("users").child(Constant.uid).child("userdata");
+
+        userData.keepSynced(true);
+
+        userData.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.hasChildren()) {return;}
+
+                View v = MainActivity.navigationView.getHeaderView(0);
+
+                Constant.nameUser = dataSnapshot.child("name").getValue().toString();
+                Constant.mailUser = dataSnapshot.child("email").getValue().toString();
+                if (dataSnapshot.child("profilepic").exists() && dataSnapshot.child("profilepic").getValue() != null){
+                    Constant.profileImgBase64 = dataSnapshot.child("profilepic").getValue().toString();
+                }
+
+                TextView username = (TextView) v.findViewById(R.id.usernavname);
+                TextView mail = (TextView) v.findViewById(R.id.usernavmail);
+
+                String saludo = getString(R.string.hi) + " " + Constant.nameUser;
+                username.setText(saludo);
+                mail.setText(Constant.mailUser);
+
+                if (Constant.profileImgBase64 != null && !Constant.profileImgBase64.equals("")){
+                    Glide.with(getApplicationContext())
+                            .load(Base64.decode(Constant.profileImgBase64, Base64.DEFAULT))
+                            .into(profilePicture);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset == 0){
+                    if (fragmentStatus == getString(R.string.start)){
+                        collToolLay.setTitle(" ");
+                        toolbarTitle.setText(R.string.app_name);
+                    } else if (fragmentStatus == getString(R.string.favoritos)) {
+                        collToolLay.setTitle(" ");
+                        toolbarTitle.setText(R.string.favTitle);
+                    }
+                }else{
+                    collToolLay.setTitle(getString(R.string.app_name));
+                    toolbarTitle.setText(" ");
+                }
+            }
+        });
+
+        mArtistChannel.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getChildren() == null) return;
+                for (DataSnapshot artist: dataSnapshot.getChildren()){
+                    if (artist.child("youtube").getValue().toString() == null) return;
+                    String youtube = artist.child("youtube").getValue().toString();
+                    if (artist.child("soundcloud").getValue().toString() == null) return;
+                    String soundCloud = artist.child("soundcloud").getValue().toString();
+                    if (artist.child("web").getValue().toString() == null) return;
+                    String web= artist.child("web").getValue().toString();
+
+                    Constant.artistSyncDB.put(artist.getKey(), new ElementoPlaylist(soundCloud, youtube, web));
+
+                }
+                if(artistChannelDB != artistSyncDB){
+                    artistChannelDB = artistSyncDB;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -386,6 +410,19 @@ public class MainActivity extends AppCompatActivity implements Communicator{
 
         nScrollView.setNestedScrollingEnabled(true);
         setSalir(0);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+
+            case R.id.imgprofile:
+
+                startActivity(new Intent(this, ProfilePicture.class));
+                break;
+        }
 
     }
 

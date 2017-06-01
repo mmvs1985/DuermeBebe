@@ -3,7 +3,9 @@
     package="com.pmcoder.duermebeb">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.camera2" android:required="false"/>
 
     <application
         android:allowBackup="true"
@@ -11,7 +13,8 @@
         android:label="Duerme Bebé"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".views.StartActivity"
+        <activity
+            android:name=".views.StartActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
@@ -25,13 +28,11 @@
             android:name=".views.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
-        </activity>
+            android:windowSoftInputMode="stateHidden"></activity>
         <activity
             android:name=".views.MainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
-        </activity>
+            android:windowSoftInputMode="stateHidden"></activity>
 
         <receiver android:name=".views.MainActivity$PlayReceiver">
             <intent-filter>
@@ -42,6 +43,7 @@
         <service
             android:name=".services.MediaPlayerMainService"
             android:enabled="true">
+
         </service>
 
         <activity
@@ -60,6 +62,26 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".views.LoginActivity" />
         </activity>
+        <activity android:name=".views.ProfilePicture"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".views.MainActivity" />
+        </activity>
+        <provider
+
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.pmcoder.duermebeb"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths">
+
+            </meta-data>
+
+        </provider>
     </application>
 
 </manifest>
