@@ -12,7 +12,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.*;
 import com.google.firebase.auth.*;
-import com.google.firebase.crash.FirebaseCrash;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.constants.Constant;
 
@@ -59,7 +58,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         try {
                             Constant.fbDatabase.setPersistenceEnabled(true);
                         }catch (Exception e){
-                            FirebaseCrash.report(e.fillInStackTrace());
+                            e.printStackTrace();
                         }
                     }
                     Constant.persistence = true;

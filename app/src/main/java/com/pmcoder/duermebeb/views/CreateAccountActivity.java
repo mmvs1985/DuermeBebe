@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.*;
 import com.google.android.gms.tasks.*;
 import com.google.firebase.auth.*;
-import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DatabaseReference;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.constants.Constant;
@@ -34,7 +33,7 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
         try{
             getSupportActionBar().setTitle("Crear Cuenta");
         }catch (Exception e){
-            FirebaseCrash.report(e);
+            e.printStackTrace();
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

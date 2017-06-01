@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.*;
 import com.google.android.gms.tasks.*;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.crash.FirebaseCrash;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.constants.Constant;
 
@@ -29,7 +28,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
         try{
             getSupportActionBar().setTitle("Recuperar contraseña");
         }catch (Exception e){
-            FirebaseCrash.report(e);
+            e.printStackTrace();
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

@@ -14,7 +14,6 @@ import com.pmcoder.duermebeb.interfaces.Communicator;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import com.pmcoder.duermebeb.constants.Constant;
 import java.util.*;
-
 import static com.pmcoder.duermebeb.constants.Constant.LOADING;
 import static com.pmcoder.duermebeb.constants.Constant.artistChannelDB;
 import static com.pmcoder.duermebeb.views.MainActivity.mMPService;

@@ -12,7 +12,6 @@ import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.adapter.FavoritesAdapter;
 import com.pmcoder.duermebeb.constants.Constant;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
-import com.pmcoder.duermebeb.models.FileManager;
 
 public class FavoritesFragment extends Fragment {
 

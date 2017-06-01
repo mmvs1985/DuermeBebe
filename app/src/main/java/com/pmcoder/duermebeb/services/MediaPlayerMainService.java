@@ -10,9 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.*;
-import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.storage.*;
 import com.pmcoder.duermebeb.constants.Constant;
 import java.io.IOException;
@@ -51,7 +49,7 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
                 Snackbar.make(Constant.viewHolder.getRootView(), "Revisa tu conexión a Internet", Snackbar.LENGTH_LONG).show();
                 return;
             }catch (Exception e){
-                FirebaseCrash.report(e.fillInStackTrace());
+                e.printStackTrace();
             }
             Toast.makeText(ctx, "Revisa tu conexión a Internet", Toast.LENGTH_LONG).show();
             playBroadcastSender(false);
