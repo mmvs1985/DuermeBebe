@@ -3,6 +3,7 @@ package com.pmcoder.duermebeb.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
@@ -55,9 +56,16 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
         holder.songName.setText(elementoPlaylist.getName());
         holder.artistName.setText(elementoPlaylist.getArtist());
         holder.progressBar.setVisibility(View.GONE);
-        Glide.with(activity)
-                .load(Base64.decode(Constant.databaseFavArray.get(position).getIcon(), Base64.DEFAULT))
-                .into(holder.imgAlbum);
+
+        if (elementoPlaylist.getIcon() != null) {
+            ArrayList<Object> arrayList = new ArrayList<>();
+            arrayList.add(elementoPlaylist.getIcon());
+            arrayList.add(activity);
+            arrayList.add(holder);
+
+            new LoadImage().execute(arrayList);
+        }
+
         holder.songData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,6 +158,33 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
             activity.sendBroadcast(i);
         }catch (NullPointerException e){
             Log.e("SendBroadcast: ", "Error "+ e);
+        }
+    }
+
+    public static class LoadImage extends AsyncTask<ArrayList, Integer, byte[]> {
+
+        private Activity act;
+        private PictureViewHolder holder;
+
+        @Override
+        protected byte[] doInBackground(ArrayList... params) {
+            byte img[] = null;
+            act = (Activity) params[0].get(1);
+            holder = (PictureViewHolder) params[0].get(2);
+
+            if (params[0].get(0) != null) {
+                img = Base64.decode((String) params[0].get(0), Base64.DEFAULT);
+            }
+            return img;
+        }
+
+        @Override
+        protected void onPostExecute(byte[] s) {
+            super.onPostExecute(s);
+
+            Glide.with(act)
+                    .load(s)
+                    .into(holder.imgAlbum);
         }
     }
 }
