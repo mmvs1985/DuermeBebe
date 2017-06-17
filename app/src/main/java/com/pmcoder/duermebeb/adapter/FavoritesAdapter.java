@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
@@ -54,14 +55,9 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
         holder.songName.setText(elementoPlaylist.getName());
         holder.artistName.setText(elementoPlaylist.getArtist());
         holder.progressBar.setVisibility(View.GONE);
-        imgReference.child("music").child("imgsongs").child(elementoPlaylist.getUrlimg())
-                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                if(uri == null){return;}
-                Glide.with(activity).load(uri).into(holder.imgAlbum);
-            }
-        });
+        Glide.with(activity)
+                .load(Base64.decode(Constant.databaseFavArray.get(position).getIcon(), Base64.DEFAULT))
+                .into(holder.imgAlbum);
         holder.songData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

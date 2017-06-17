@@ -58,17 +58,17 @@ public class FavoritesFragment extends Fragment {
 
                 for (DataSnapshot songlist: dataSnapshot.getChildren()){
 
-                    if (songlist.child("name").getValue() == null) return;
-                    String name = songlist.child("name").getValue().toString();
-                    if (songlist.child("artist").getValue() == null) return;
-                    String artist = songlist.child("artist").getValue().toString();
-                    if (songlist.child("urlsong").getValue() == null) return;
-                    String urlSong = songlist.child("urlsong").getValue().toString();
-                    if (songlist.child("urlimg").getValue() == null) return;
-                    String urlImg = songlist.child("urlimg").getValue().toString();
+                    String name = songlist.child("name").getValue() != null?
+                            songlist.child("name").getValue().toString():null;
+                    String artist =songlist.child("artist").getValue() != null?
+                            songlist.child("artist").getValue().toString():null;
+                    String urlSong = songlist.child("urlsong").getValue() != null?
+                            songlist.child("urlsong").getValue().toString():null;
+                    String icon = songlist.child("icon").getValue() != null?
+                            songlist.child("icon").getValue().toString():null;
 
                     Constant.databaseFavArray
-                            .add(new ElementoPlaylist(artist, name, urlSong, urlImg));
+                            .add(new ElementoPlaylist(artist, name, urlSong, icon));
                 }
                 if (!Constant.favoritesArray.equals(Constant.databaseFavArray)){
                     Constant.favoritesArray.clear();

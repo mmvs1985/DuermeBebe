@@ -8,10 +8,10 @@ public class ElementoPlaylist {
     private String youtube;
     private String web;
     private String like = "false";
-    private String urlimg;
+    private String icon;
 
 
-    public ElementoPlaylist(String artist, String name, String urlsong, String like, String urlimg, String soundcloud, String youtube, String web) {
+    public ElementoPlaylist(String artist, String name, String urlsong, String like, String icon, String soundcloud, String youtube, String web) {
         this.artist = artist;
         this.name = name;
         this.urlsong = urlsong;
@@ -19,29 +19,22 @@ public class ElementoPlaylist {
         this.youtube = youtube;
         this.web = web;
         this.like = like;
-        this.urlimg = urlimg;
+        this.icon = icon;
     }
 
-    public ElementoPlaylist(String artist, String name, String urlsong, String like, String urlimg) {
+    public ElementoPlaylist(String artist, String name, String urlsong, String like, String icon) {
         this.artist = artist;
         this.name = name;
         this.urlsong = urlsong;
         this.like = like;
-        this.urlimg = urlimg;
+        this.icon = icon;
     }
 
-    public ElementoPlaylist(String artist, String name, String urlsong, String urlimg) {
+    public ElementoPlaylist(String artist, String name, String urlsong, String icon) {
         this.artist = artist;
         this.name = name;
         this.urlsong = urlsong;
-        this.urlimg = urlimg;
-    }
-
-    public ElementoPlaylist(String artist, String name, String urlsong, String urlimg, String soundcloud, String youtube, String web) {
-        this.artist = artist;
-        this.name = name;
-        this.urlsong = urlsong;
-        this.urlimg = urlimg;
+        this.icon = icon;
     }
 
     public ElementoPlaylist(String soundcloud, String youtube, String web) {
@@ -66,32 +59,20 @@ public class ElementoPlaylist {
         return urlsong;
     }
 
-    public String getUrlimg() {
-        return urlimg;
+    public String getIcon() {
+        return icon;
     }
 
     public String getSoundcloud() {
         return soundcloud;
     }
 
-    public void setSoundcloud(String soundcloud) {
-        this.soundcloud = soundcloud;
-    }
-
     public String getYoutube() {
         return youtube;
     }
 
-    public void setYoutube(String youtube) {
-        this.youtube = youtube;
-    }
-
     public String getWeb() {
         return web;
-    }
-
-    public void setWeb(String web) {
-        this.web = web;
     }
 
     public void setLike(String like) {

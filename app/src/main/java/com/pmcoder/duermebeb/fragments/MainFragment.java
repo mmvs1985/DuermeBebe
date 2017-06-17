@@ -31,6 +31,8 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_main, container, false);
 
+        Constant.mainListArray.add(new ElementoPlaylist("", "Cargando elementos", "", ""));
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
 
         LinearLayoutManager linearLayout = new LinearLayoutManager(getContext());
@@ -59,17 +61,17 @@ public class MainFragment extends Fragment {
 
                 for (DataSnapshot songlist: dataSnapshot.getChildren()) {
 
-                    if (songlist.child("name").getValue() == null) return;
-                    String songName = songlist.child("name").getValue().toString();
-                    if (songlist.child("artist").getValue() == null) return;
-                    String artist = songlist.child("artist").getValue().toString();
-                    if (songlist.child("urlsong").getValue() == null) return;
-                    String urlSong = songlist.child("urlsong").getValue().toString();
-                    if (songlist.child("urlimg").getValue() == null) return;
-                    String urlImg = songlist.child("urlimg").getValue().toString();
+                    String songName = songlist.child("name").getValue() != null?
+                            songlist.child("name").getValue().toString():null;
+                    String artist = songlist.child("artist").getValue() != null?
+                            songlist.child("artist").getValue().toString(): null;
+                    String urlSong = songlist.child("urlsong").getValue() != null?
+                            songlist.child("urlsong").getValue().toString():null;
+                    String icon = songlist.child("icon").getValue() != null?
+                            songlist.child("icon").getValue().toString():null;
 
 
-                    Constant.dataBaseMainArray.add(new ElementoPlaylist(artist, songName, urlSong, "false", urlImg));
+                    Constant.dataBaseMainArray.add(new ElementoPlaylist(artist, songName, urlSong, "false", icon));
                 }
 
                 if (!Constant.mainListArray.equals(Constant.dataBaseMainArray)){
