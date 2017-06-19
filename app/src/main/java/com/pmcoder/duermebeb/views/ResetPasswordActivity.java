@@ -11,7 +11,7 @@ import android.widget.*;
 import com.google.android.gms.tasks.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.constants.Constant;
+import com.pmcoder.duermebeb.golbal.GlobalVariables;
 
 public class ResetPasswordActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -23,7 +23,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarmain);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         try{
             getSupportActionBar().setTitle("Recuperar contraseña");
@@ -46,7 +46,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
         switch (v.getId()){
             case R.id.resetPassBtn:
 
-                if (!Constant.funcionaInternet()){
+                if (!GlobalVariables.funcionaInternet()){
                     Snackbar.make(v, "Revisa tu conexión an internet", Snackbar.LENGTH_LONG).show();
                     return;
                 }else{

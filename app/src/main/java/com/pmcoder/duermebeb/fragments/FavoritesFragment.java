@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.adapter.FavoritesAdapter;
-import com.pmcoder.duermebeb.constants.Constant;
+import com.pmcoder.duermebeb.golbal.GlobalVariables;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 
 public class FavoritesFragment extends Fragment {
@@ -24,13 +24,12 @@ public class FavoritesFragment extends Fragment {
     private BroadcastReceiver broadcastReceiver;
     private IntentFilter intentFilter;
 
-    DatabaseReference databaseReference = Constant.fbDatabase.getReference().child("users");
-    DatabaseReference favPlaylist = databaseReference.child(Constant.uid).child("favorites");
+    DatabaseReference databaseReference = GlobalVariables.fbDatabase.getReference().child("users");
+    DatabaseReference favPlaylist = databaseReference.child(GlobalVariables.uid).child("favorites");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_favorites, container, false);
 
         broadcastReceiver = new ReloadFragment();
@@ -42,7 +41,7 @@ public class FavoritesFragment extends Fragment {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         recyclerView.setLayoutManager(linearLayout);
 
-        favoritesAdapter = new FavoritesAdapter(Constant.favoritesArray, getActivity(), R.layout.favouritescardview);
+        favoritesAdapter = new FavoritesAdapter(GlobalVariables.favoritesArray, getActivity(), R.layout.favouritescardview);
         recyclerView.setAdapter(favoritesAdapter);
 
         return view;
@@ -54,7 +53,7 @@ public class FavoritesFragment extends Fragment {
         favPlaylist.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Constant.databaseFavArray.clear();
+                GlobalVariables.databaseFavArray.clear();
 
                 for (DataSnapshot songlist: dataSnapshot.getChildren()){
 
@@ -67,15 +66,15 @@ public class FavoritesFragment extends Fragment {
                     String icon = songlist.child("icon").getValue() != null?
                             songlist.child("icon").getValue().toString():null;
 
-                    Constant.databaseFavArray
+                    GlobalVariables.databaseFavArray
                             .add(new ElementoPlaylist(artist, name, urlSong, icon));
                 }
-                if (!Constant.favoritesArray.equals(Constant.databaseFavArray)){
-                    Constant.favoritesArray.clear();
-                    Constant.favoritesArray = Constant.databaseFavArray;
+                if (!GlobalVariables.favoritesArray.equals(GlobalVariables.databaseFavArray)){
+                    GlobalVariables.favoritesArray.clear();
+                    GlobalVariables.favoritesArray = GlobalVariables.databaseFavArray;
 
                     Log.i("fav", "Hasta aquí todo listo");
-                    favoritesAdapter = new FavoritesAdapter(Constant.favoritesArray, getActivity(), R.layout.favouritescardview);
+                    favoritesAdapter = new FavoritesAdapter(GlobalVariables.favoritesArray, getActivity(), R.layout.favouritescardview);
                     recyclerView.setAdapter(favoritesAdapter);
                 }
 

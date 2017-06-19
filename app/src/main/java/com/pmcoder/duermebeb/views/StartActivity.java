@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.constants.Constant;
+import com.pmcoder.duermebeb.golbal.GlobalVariables;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -32,19 +32,19 @@ public class StartActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null){
                     Log.i("SESION", "Sesión iniciada");
-                    Constant.uid = user.getUid();
-                    if (!Constant.persistence){
+                    GlobalVariables.uid = user.getUid();
+                    if (!GlobalVariables.persistence){
                         try {
-                            Constant.fbDatabase.setPersistenceEnabled(true);
+                            GlobalVariables.fbDatabase.setPersistenceEnabled(true);
                         }catch (Exception e){
                             e.printStackTrace();
                         }
                     }
-                    Constant.persistence = true;
+                    GlobalVariables.persistence = true;
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
                 }else{
-                    Constant.persistence = false;
+                    GlobalVariables.persistence = false;
                     Log.i("SESION", "Sesión cerrada");
 
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));

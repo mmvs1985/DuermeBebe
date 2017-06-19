@@ -12,9 +12,10 @@ import android.view.View;
 import android.widget.Toast;
 import com.google.android.gms.tasks.*;
 import com.google.firebase.storage.*;
-import com.pmcoder.duermebeb.constants.Constant;
+import com.pmcoder.duermebeb.golbal.GlobalVariables;
+
 import java.io.IOException;
-import static com.pmcoder.duermebeb.constants.Constant.*;
+import static com.pmcoder.duermebeb.golbal.GlobalVariables.*;
 
 public class MediaPlayerMainService extends Service implements MediaPlayer.OnPreparedListener {
 
@@ -24,9 +25,9 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
     public static String songNow;
     private Context ctx;
 
-    public MediaPlayerMainService(){
+    public MediaPlayerMainService () {
+        //Constructor vacío obligatorio
     }
-
     public MediaPlayerMainService(Context ctx) {
         this.ctx = ctx;
     }
@@ -44,9 +45,12 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
 
     public void preparePlaying(String song){
 
-        if (!Constant.funcionaInternet()){
+        if (!GlobalVariables.funcionaInternet()){
             try{
-                Snackbar.make(Constant.viewHolder.getRootView(), "Revisa tu conexión a Internet", Snackbar.LENGTH_LONG).show();
+                Snackbar
+                        .make(GlobalVariables.viewHolder.getRootView(),
+                                "Revisa tu conexión a Internet",
+                                Snackbar.LENGTH_LONG).show();
                 return;
             }catch (Exception e){
                 e.printStackTrace();
@@ -97,6 +101,7 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
     public void onPrepared(MediaPlayer mp) {
         mp.seekTo(0);
         mp.start();
+        mp.setLooping(true);
         playBroadcastSender(PLAYING);
         LOADING = false;
         setLoadingState();
@@ -167,8 +172,8 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
     }
 
     public void setLoadingState(){
-        if (Constant.viewHolder != null){
-            Constant.viewHolder.setVisibility(View.GONE);
+        if (GlobalVariables.viewHolder != null){
+            GlobalVariables.viewHolder.setVisibility(View.GONE);
         }
     }
 }

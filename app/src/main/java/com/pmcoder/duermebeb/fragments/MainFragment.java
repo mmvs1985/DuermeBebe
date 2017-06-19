@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.adapter.MainAdapter;
-import com.pmcoder.duermebeb.constants.Constant;
+import com.pmcoder.duermebeb.golbal.GlobalVariables;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 
 public class MainFragment extends Fragment {
@@ -21,9 +21,10 @@ public class MainFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private DatabaseReference mDatabaseReference = Constant.fbDatabase.getReference();
+    private DatabaseReference mDatabaseReference = GlobalVariables.fbDatabase.getReference();
     private DatabaseReference songList = mDatabaseReference.child("defSongs");
-    private DatabaseReference favorites = mDatabaseReference.child("users").child(Constant.uid).child("favorites");
+    private DatabaseReference favorites = mDatabaseReference
+            .child("users").child(GlobalVariables.uid).child("favorites");
     private RecyclerView recyclerView;
 
     @Override
@@ -31,7 +32,7 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_main, container, false);
 
-        Constant.mainListArray.add(new ElementoPlaylist("", "Cargando elementos", "", ""));
+        GlobalVariables.mainListArray.add(new ElementoPlaylist("", "Cargando elementos", "", ""));
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
 
@@ -39,7 +40,7 @@ public class MainFragment extends Fragment {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         recyclerView.setLayoutManager(linearLayout);
 
-        mainAdapter = new MainAdapter(Constant.mainListArray, getActivity(), R.layout.cardview);
+        mainAdapter = new MainAdapter(GlobalVariables.mainListArray, getActivity(), R.layout.cardview);
         recyclerView.setAdapter(mainAdapter);
 
         return view;
@@ -57,7 +58,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Constant.dataBaseMainArray.clear();
+                com.pmcoder.duermebeb.golbal.GlobalVariables.dataBaseMainArray.clear();
 
                 for (DataSnapshot songlist: dataSnapshot.getChildren()) {
 
@@ -71,14 +72,14 @@ public class MainFragment extends Fragment {
                             songlist.child("icon").getValue().toString():null;
 
 
-                    Constant.dataBaseMainArray.add(new ElementoPlaylist(artist, songName, urlSong, "false", icon));
+                    GlobalVariables.dataBaseMainArray.add(new ElementoPlaylist(artist, songName, urlSong, "false", icon));
                 }
 
-                if (!Constant.mainListArray.equals(Constant.dataBaseMainArray)){
-                    Constant.mainListArray.clear();
-                    Constant.mainListArray = Constant.dataBaseMainArray;
+                if (!GlobalVariables.mainListArray.equals(GlobalVariables.dataBaseMainArray)){
+                    GlobalVariables.mainListArray.clear();
+                    GlobalVariables.mainListArray = GlobalVariables.dataBaseMainArray;
 
-                    mainAdapter = new MainAdapter(Constant.mainListArray, getActivity(), R.layout.cardview);
+                    mainAdapter = new MainAdapter(GlobalVariables.mainListArray, getActivity(), R.layout.cardview);
                     recyclerView.setAdapter(mainAdapter);
                 }
             }
@@ -98,9 +99,9 @@ public class MainFragment extends Fragment {
 
                     int i = 0;
 
-                    while (i < Constant.mainListArray.size()){
-                        if (Constant.mainListArray.get(i).getName().equals(name)){
-                            Constant.mainListArray.get(i).setLike(like);
+                    while (i < GlobalVariables.mainListArray.size()){
+                        if (GlobalVariables.mainListArray.get(i).getName().equals(name)){
+                            GlobalVariables.mainListArray.get(i).setLike(like);
                         }
                         i++;
                     }

@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 
 import com.google.firebase.database.DatabaseReference;
-import com.pmcoder.duermebeb.constants.Constant;
+import com.pmcoder.duermebeb.golbal.GlobalVariables;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class FileManager {
 
             params[0].child("userdata")
                     .child("profilepic")
-                    .setValue(Constant.profileImgBase64);
+                    .setValue(GlobalVariables.profileImgBase64);
 
             return null;
         }

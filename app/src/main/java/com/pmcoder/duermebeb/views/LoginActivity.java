@@ -13,7 +13,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.*;
 import com.google.firebase.auth.*;
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.constants.Constant;
+import com.pmcoder.duermebeb.golbal.GlobalVariables;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -54,14 +54,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null){
                     Log.i("SESION", "Sesión iniciada");
-                    if (!Constant.persistence){
+                    if (!GlobalVariables.persistence){
                         try {
-                            Constant.fbDatabase.setPersistenceEnabled(true);
+                            GlobalVariables.fbDatabase.setPersistenceEnabled(true);
                         }catch (Exception e){
                             e.printStackTrace();
                         }
                     }
-                    Constant.persistence = true;
+                    GlobalVariables.persistence = true;
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
                 }else{
@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onFailure(@NonNull Exception e) {
 
-                if (Constant.funcionaInternet()){
+                if (GlobalVariables.funcionaInternet()){
                 Snackbar.make(v, "Usuario o contraseña incorrectos", Snackbar.LENGTH_SHORT).show();
                 }else {
                     Snackbar.make(v, "Revisa tu conexión a internet", Snackbar.LENGTH_SHORT).show();

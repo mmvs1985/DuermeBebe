@@ -22,8 +22,8 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.auth.*;
 import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.constants.Constant;
 import com.pmcoder.duermebeb.fragments.*;
+import com.pmcoder.duermebeb.golbal.GlobalVariables;
 import com.pmcoder.duermebeb.interfaces.Communicator;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import com.pmcoder.duermebeb.services.MediaPlayerMainService;
@@ -31,26 +31,23 @@ import static com.pmcoder.duermebeb.R.drawable.*;
 import static com.pmcoder.duermebeb.R.string.*;
 import static com.pmcoder.duermebeb.fragments.MainFragment.mainAdapter;
 import static com.pmcoder.duermebeb.services.MediaPlayerMainService.*;
-import static com.pmcoder.duermebeb.constants.Constant.*;
+import static com.pmcoder.duermebeb.golbal.GlobalVariables.*;
 
 public class MainActivity extends AppCompatActivity implements Communicator, View.OnClickListener{
 
     public static NavigationView navigationView;
     public static MediaPlayerMainService mMPService;
     private static BottomNavigationView bNView;
-    private AppBarLayout appbar;
-    private NestedScrollView nScrollView;
-    private CollapsingToolbarLayout collToolLay;
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private BroadcastReceiver mReceiver;
     private IntentFilter intentFilter;
     private ActionBarDrawerToggle toggle;
     private DrawerLayout drawer;
-    private TextView toolbarTitle;
     private String fragmentStatus;
+    private TabLayout tabLayout;
     private InfoFragment infoFrag;
     private ImageView profilePicture;
-    private DatabaseReference mDatabaseReference = Constant.fbDatabase.getReference();
+    private DatabaseReference mDatabaseReference = GlobalVariables.fbDatabase.getReference();
     private DatabaseReference mArtistChannel = mDatabaseReference.child("artist-channel");
 
     @Override
@@ -58,15 +55,13 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        appbar = (AppBarLayout) findViewById(R.id.mainappbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarmain);
+        setSupportActionBar(toolbar);
 
-        nScrollView = (NestedScrollView) findViewById(R.id.nestedscroll);
-
-        collToolLay = (CollapsingToolbarLayout) findViewById(R.id.collaptoolbar);
-        collToolLay.setTitle(" ");
-
-        toolbarTitle = (TextView) findViewById(R.id.titletoolbar);
-        toolbarTitle.setText(R.string.startTitle);
+        tabLayout = (TabLayout) findViewById(R.id.tablayout);
+        tabLayout.addTab(tabLayout.newTab().setText("Canciones"));
+        tabLayout.addTab(tabLayout.newTab().setText("Sonidos"));
+        tabLayout.setOnClickListener(this);
 
         fragmentManager.beginTransaction().add(R.id.container, new MainFragment()).commit();
 
@@ -77,9 +72,6 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
 
         Intent mediaService = new Intent(this, MediaPlayerMainService.class);
         startService(mediaService);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
@@ -102,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
                     case R.id.nav_inicio:
                         fragmentStatus = getString(R.string.start);
                         item.setChecked(true);
-                        appbar.setExpanded(true);
                         fragmentTransaction = true;
                         fragment = new MainFragment();
                         setSalir(0);
@@ -111,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
                     case R.id.nav_favoritos:
                         fragmentStatus = getString(R.string.favoritos);
                         item.setChecked(true);
-                        appbar.setExpanded(true);
                         fragmentTransaction = true;
                         fragment = new FavoritesFragment();
                         setSalir(0);
@@ -167,7 +157,8 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
         super.onPostCreate(savedInstanceState);
         toggle.syncState();
 
-        DatabaseReference userData = mDatabaseReference.child("users").child(Constant.uid).child("userdata");
+        DatabaseReference userData = mDatabaseReference
+                .child("users").child(GlobalVariables.uid).child("userdata");
 
         userData.keepSynced(true);
 
@@ -178,46 +169,28 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
 
                 View v = MainActivity.navigationView.getHeaderView(0);
 
-                Constant.nameUser = dataSnapshot.child("name").getValue().toString();
-                Constant.mailUser = dataSnapshot.child("email").getValue().toString();
+                GlobalVariables.nameUser = dataSnapshot.child("name").getValue().toString();
+                GlobalVariables.mailUser = dataSnapshot.child("email").getValue().toString();
                 if (dataSnapshot.child("profilepic").exists() && dataSnapshot.child("profilepic").getValue() != null){
-                    Constant.profileImgBase64 = dataSnapshot.child("profilepic").getValue().toString();
+                    GlobalVariables.profileImgBase64 = dataSnapshot.child("profilepic").getValue().toString();
                 }
 
                 TextView username = (TextView) v.findViewById(R.id.usernavname);
                 TextView mail = (TextView) v.findViewById(R.id.usernavmail);
 
-                String saludo = getString(R.string.hi) + " " + Constant.nameUser;
+                String saludo = getString(R.string.hi) + " " + GlobalVariables.nameUser;
                 username.setText(saludo);
-                mail.setText(Constant.mailUser);
+                mail.setText(GlobalVariables.mailUser);
 
-                if (Constant.profileImgBase64 != null && !Constant.profileImgBase64.equals("")){
+                if (GlobalVariables.profileImgBase64 != null && !GlobalVariables.profileImgBase64.equals("")){
                     Glide.with(getApplicationContext())
-                            .load(Base64.decode(Constant.profileImgBase64, Base64.DEFAULT))
+                            .load(Base64.decode(GlobalVariables.profileImgBase64, Base64.DEFAULT))
                             .into(profilePicture);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-        appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (verticalOffset == 0){
-                    if (fragmentStatus == getString(R.string.start)){
-                        collToolLay.setTitle(" ");
-                        toolbarTitle.setText(R.string.app_name);
-                    } else if (fragmentStatus == getString(R.string.favoritos)) {
-                        collToolLay.setTitle(" ");
-                        toolbarTitle.setText(R.string.favTitle);
-                    }
-                }else{
-                    collToolLay.setTitle(getString(R.string.app_name));
-                    toolbarTitle.setText(" ");
-                }
             }
         });
 
@@ -233,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
                     if (artist.child("web").getValue().toString() == null) return;
                     String web= artist.child("web").getValue().toString();
 
-                    Constant.artistSyncDB.put(artist.getKey(), new ElementoPlaylist(soundCloud, youtube, web));
+                    GlobalVariables.artistSyncDB.put(artist.getKey(), new ElementoPlaylist(soundCloud, youtube, web));
 
                 }
                 if(artistChannelDB != artistSyncDB){
@@ -244,6 +217,35 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+                int i = tab.getPosition();
+                if (i == 0) {
+                    fragmentManager
+                            .beginTransaction()
+                            .replace(R.id.container, new MainFragment())
+                            .commit();
+                } else if (i == 1) {
+                    fragmentManager
+                            .beginTransaction()
+                            .replace(R.id.container, new SleepSounds())
+                            .commit();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
 
             }
         });
@@ -264,20 +266,20 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         assert user != null;
-        Constant.uid = user.getUid();
+        GlobalVariables.uid = user.getUid();
 
         bNView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.play_pause_menu:
-                        if (fragmentStatus == getString(R.string.start)){
+                        if (fragmentStatus.equals(getString(R.string.start))){
                             if (mainListArray.size() < 1){
                                 Snackbar.make(getCurrentFocus().findFocus(), R.string.list_empty,
                                         Snackbar.LENGTH_LONG).show();
                                 break;
                             }
-                        } else if (fragmentStatus == getString(R.string.favoritos)) {
+                        } else if (fragmentStatus.equals(getString(R.string.favoritos))) {
                             if (favoritesArray.size() < 1){
                                 Snackbar.make(getCurrentFocus().findFocus(), R.string.list_empty,
                                         Snackbar.LENGTH_LONG).show();
@@ -287,9 +289,12 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
 
                         int i = (int) Math.floor(Math.random() * mainAdapter.getItemCount());
                         if (mMPService.mp == null){
-                            Toast.makeText(getApplicationContext(), R.string.shuffle_starts,Toast.LENGTH_SHORT).show();
-                            if (Constant.viewHolder != null){
-                                Constant.viewHolder.setVisibility(View.GONE);
+                            Toast
+                                    .makeText(getApplicationContext(),
+                                            R.string.shuffle_starts,
+                                            Toast.LENGTH_SHORT).show();
+                            if (GlobalVariables.viewHolder != null){
+                                GlobalVariables.viewHolder.setVisibility(View.GONE);
                             }
                             mMPService.setPlaying(mainListArray.get(i).getUrlsong());
                             bNView.getMenu().findItem(R.id.play_pause_menu).setIcon(shuffle_48);
@@ -318,16 +323,13 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
     @Override
     public void onBackPressed() {
 
-        if (fragmentStatus == "infoFragment"){
+        if (fragmentStatus.equals("infoFragment")){
             fragmentManager
                     .beginTransaction()
                     .remove(infoFrag)
                     .commit();
 
             fragmentStatus = " ";
-
-            appbar.setExpanded(true);
-            nScrollView.setNestedScrollingEnabled(true);
             return;
         }
 
@@ -377,11 +379,9 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
 
     @Override
     public void respond(String autor, String song) {
-        appbar.setExpanded(false);
-        nScrollView.setNestedScrollingEnabled(false);
 
-        Constant.infoArtist = autor;
-        Constant.infoSong = song;
+        GlobalVariables.infoArtist = autor;
+        GlobalVariables.infoSong = song;
 
         infoFrag = new InfoFragment();
 
@@ -398,7 +398,6 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
     @Override
     public void closeNotificationFragment() {
 
-        nScrollView.setNestedScrollingEnabled(true);
         setSalir(0);
 
     }

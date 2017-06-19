@@ -5,15 +5,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.constants.Constant;
+import com.pmcoder.duermebeb.golbal.GlobalVariables;
 import com.pmcoder.duermebeb.interfaces.Communicator;
 
 import static android.content.Intent.ACTION_VIEW;
@@ -35,17 +33,17 @@ public class InfoFragment extends Fragment implements View.OnClickListener{
         View v = inflater.inflate(R.layout.fragment_info, container, false);
 
         artist = (TextView) v.findViewById(R.id.artistcardinfo);
-        artist.setText(Constant.infoArtist);
+        artist.setText(GlobalVariables.infoArtist);
         song = (TextView) v.findViewById(R.id.songcardinfo);
-        song.setText(Constant.infoSong);
+        song.setText(GlobalVariables.infoSong);
         web = (TextView) v.findViewById(R.id.urlweb);
-        web.setText(Constant.web);
+        web.setText(GlobalVariables.web);
         web.setOnClickListener(this);
         soundcloud = (TextView) v.findViewById(R.id.urlsoundcloud);
-        soundcloud.setText(Constant.soundcloud);
+        soundcloud.setText(GlobalVariables.soundcloud);
         soundcloud.setOnClickListener(this);
         youtube = (TextView) v.findViewById(R.id.urlyoutube);
-        youtube.setText(Constant.youtube);
+        youtube.setText(GlobalVariables.youtube);
         youtube.setOnClickListener(this);
 
         exit = (CoordinatorLayout) v.findViewById(R.id.exit);
@@ -72,15 +70,15 @@ public class InfoFragment extends Fragment implements View.OnClickListener{
                 break;
 
             case R.id.urlweb:
-                openUrl(Constant.web);
+                openUrl(GlobalVariables.web);
                 break;
 
             case R.id.urlsoundcloud:
-                openUrl(Constant.soundcloud);
+                openUrl(GlobalVariables.soundcloud);
                 break;
 
             case R.id.urlyoutube:
-                openUrl(Constant.youtube);
+                openUrl(GlobalVariables.youtube);
                 break;
         }
 

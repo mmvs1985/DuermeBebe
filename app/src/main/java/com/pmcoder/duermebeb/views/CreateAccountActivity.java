@@ -14,21 +14,21 @@ import com.google.android.gms.tasks.*;
 import com.google.firebase.auth.*;
 import com.google.firebase.database.DatabaseReference;
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.constants.Constant;
+import com.pmcoder.duermebeb.golbal.GlobalVariables;
 
 public class CreateAccountActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private FirebaseAuth.AuthStateListener mAuthListener;
     private TextInputEditText etEmail, etName, etPassword, etConfPassword;
-    private DatabaseReference database = Constant.fbDatabase.getReference().child("users");
+    private DatabaseReference database = GlobalVariables.fbDatabase.getReference().child("users");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarmain);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         try{
             getSupportActionBar().setTitle("Crear Cuenta");
@@ -51,7 +51,7 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null){
                     Log.i("SESION", "Sesión iniciada");
-                    Constant.uid = user.getUid();
+                    GlobalVariables.uid = user.getUid();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     Toast.makeText(getApplicationContext(), "Iniciando Sesión",
                             Toast.LENGTH_LONG).show();
@@ -131,7 +131,7 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onFailure(@NonNull Exception e) {
 
-                if (Constant.funcionaInternet()){
+                if (GlobalVariables.funcionaInternet()){
                     if (e.getMessage().equals(getString(R.string.CONSTANTEMAILEXISTS))){
                         Snackbar.make(v, R.string.account_alredy_exists,
                                 Snackbar.LENGTH_LONG).show();

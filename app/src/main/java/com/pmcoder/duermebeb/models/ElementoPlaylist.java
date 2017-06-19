@@ -43,6 +43,11 @@ public class ElementoPlaylist {
         this.web = web;
     }
 
+    public  ElementoPlaylist(String name, String icon) {
+        this.icon = icon;
+        this.name = name;
+    }
+
     public String getArtist() {
         return artist;
     }

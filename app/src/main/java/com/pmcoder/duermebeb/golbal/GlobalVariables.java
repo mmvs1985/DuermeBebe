@@ -1,4 +1,4 @@
-package com.pmcoder.duermebeb.constants;
+package com.pmcoder.duermebeb.golbal;
 
 import android.view.View;
 import com.google.firebase.database.FirebaseDatabase;
@@ -6,8 +6,9 @@ import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.Runtime;
 
-public class Constant {
+public class GlobalVariables {
 
     public static Boolean PLAYING, LOADING = false;
     public static Boolean persistence = false;
@@ -30,7 +31,7 @@ public class Constant {
     public static Boolean funcionaInternet() {
 
         try {
-            Process p = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.es");
+            Process p = Runtime.getRuntime().exec("ping -c 1 www.google.es");
 
             int val = p.waitFor();
             return (val == 0);

@@ -6,6 +6,6 @@ package com.pmcoder.duermebeb.interfaces;
 
 public interface Communicator {
 
-    public void respond(String autor, String song);
-    public void closeNotificationFragment();
+    void respond(String autor, String song);
+    void closeNotificationFragment();
 }

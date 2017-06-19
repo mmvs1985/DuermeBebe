@@ -1,10 +1,7 @@
 package com.pmcoder.duermebeb.views;
 
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,18 +19,13 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DatabaseReference;
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.constants.Constant;
 import com.pmcoder.duermebeb.fragments.ProfilePic;
+import com.pmcoder.duermebeb.golbal.GlobalVariables;
 import com.pmcoder.duermebeb.models.FileManager;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -46,10 +38,10 @@ public class ProfilePicture extends AppCompatActivity implements View.OnClickLis
     private TextView username, usermail;
     private byte aByte[];
     final static int REQUEST_CODE_CAPTURE = 1;
-    private DatabaseReference profPicDb = Constant.fbDatabase
+    private DatabaseReference profPicDb = GlobalVariables.fbDatabase
             .getReference()
             .child("users")
-            .child(Constant.uid);
+            .child(GlobalVariables.uid);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +53,8 @@ public class ProfilePicture extends AppCompatActivity implements View.OnClickLis
         username = (TextView) findViewById(R.id.username);
         usermail = (TextView) findViewById(R.id.usermail);
 
-        if (Constant.profileImgBase64 != null && !Constant.profileImgBase64.equals("")){
-            byte photo[] = Base64.decode(Constant.profileImgBase64, Base64.DEFAULT);
+        if (GlobalVariables.profileImgBase64 != null && !GlobalVariables.profileImgBase64.equals("")){
+            byte photo[] = Base64.decode(GlobalVariables.profileImgBase64, Base64.DEFAULT);
             Glide.with(getApplicationContext())
                     .load(photo)
                     .into(profilePic);
@@ -73,12 +65,12 @@ public class ProfilePicture extends AppCompatActivity implements View.OnClickLis
                     .show();
         }
 
-        if (Constant.nameUser != null && !Constant.nameUser.equals("")){
-            username.setText(Constant.nameUser);
-            usermail.setText(Constant.mailUser);
+        if (GlobalVariables.nameUser != null && !GlobalVariables.nameUser.equals("")){
+            username.setText(GlobalVariables.nameUser);
+            usermail.setText(GlobalVariables.mailUser);
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarmain);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.profileTitle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -107,7 +99,7 @@ public class ProfilePicture extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.profilepic:
 
-                if (Constant.profileImgBase64 != null && !Constant.profileImgBase64.equals("")){
+                if (GlobalVariables.profileImgBase64 != null && !GlobalVariables.profileImgBase64.equals("")){
                     fragmentProfile = new ProfilePic();
                     fragmentManager
                             .beginTransaction()
@@ -174,9 +166,7 @@ public class ProfilePicture extends AppCompatActivity implements View.OnClickLis
             e.printStackTrace();
         }
 
-        Constant.profileImgBase64 = Base64.encodeToString(aByte, Base64.DEFAULT);
-
-        Log.i("base", Constant.profileImgBase64);
+        GlobalVariables.profileImgBase64 = Base64.encodeToString(aByte, Base64.DEFAULT);
 
         new FileManager.ImgToFirebase().execute(profPicDb);
     }
