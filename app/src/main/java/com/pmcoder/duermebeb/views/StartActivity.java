@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.golbal.GlobalVariables;
+import com.pmcoder.duermebeb.global.GlobalVariables;
 
 public class StartActivity extends AppCompatActivity {
 

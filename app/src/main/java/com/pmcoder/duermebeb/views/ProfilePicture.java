@@ -2,6 +2,7 @@ package com.pmcoder.duermebeb.views;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,24 +10,19 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
 import com.google.firebase.database.DatabaseReference;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.fragments.ProfilePic;
-import com.pmcoder.duermebeb.golbal.GlobalVariables;
+import com.pmcoder.duermebeb.global.GlobalVariables;
 import com.pmcoder.duermebeb.models.FileManager;
-
+import com.pmcoder.duermebeb.models.ImageResizer;
+import com.pmcoder.duermebeb.models.ImageUtil;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfilePicture extends AppCompatActivity implements View.OnClickListener{
@@ -35,8 +31,6 @@ public class ProfilePicture extends AppCompatActivity implements View.OnClickLis
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment fragmentProfile = null;
     private CircleImageView profilePic;
-    private TextView username, usermail;
-    private byte aByte[];
     final static int REQUEST_CODE_CAPTURE = 1;
     private DatabaseReference profPicDb = GlobalVariables.fbDatabase
             .getReference()
@@ -50,14 +44,12 @@ public class ProfilePicture extends AppCompatActivity implements View.OnClickLis
 
         ImageView cam = (ImageView) findViewById(R.id.cam);
         profilePic = (CircleImageView) findViewById(R.id.profilepic);
-        username = (TextView) findViewById(R.id.username);
-        usermail = (TextView) findViewById(R.id.usermail);
+        TextView username = (TextView) findViewById(R.id.username);
+        TextView usermail = (TextView) findViewById(R.id.usermail);
 
         if (GlobalVariables.profileImgBase64 != null && !GlobalVariables.profileImgBase64.equals("")){
-            byte photo[] = Base64.decode(GlobalVariables.profileImgBase64, Base64.DEFAULT);
-            Glide.with(getApplicationContext())
-                    .load(photo)
-                    .into(profilePic);
+
+            profilePic.setImageBitmap(ImageUtil.convert(GlobalVariables.profileImgBase64));
         } else {
             Toast.makeText(getApplicationContext()
                     , R.string.notprofilepic
@@ -85,8 +77,10 @@ public class ProfilePicture extends AppCompatActivity implements View.OnClickLis
         if (fragmentProfile != null){
             fragmentManager.beginTransaction().remove(fragmentProfile).commit();
             fragmentProfile = null;
-            
+
+            return;
         }
+        finish();
     }
 
     @Override
@@ -144,31 +138,40 @@ public class ProfilePicture extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-
+        ImageResizer imageResizer = new ImageResizer(profilePic);
+        imageResizer.setTARGET_IMAGE_VIEW_HEIGHT(profilePic.getHeight());
+        imageResizer.setTARGET_IMAGE_VIEW_WIDTH(profilePic.getWidth());
 
         if (requestCode == REQUEST_CODE_CAPTURE && resultCode == RESULT_OK) {
+            File photo = new File(manager.getPhotoPath());
+            imageResizer.execute(photo);
 
-            Glide.with(getApplicationContext()).load(manager.getPhotoPath()).into(profilePic);
+            if (ImageResizer.fireBaseBitmap == null) {
+                while (ImageResizer.fireBaseBitmap == null){
+                }
+            }
+            if (ImageResizer.fireBaseBitmap != null)
+            {
+                GlobalVariables.profileImgBase64 = ImageUtil.convert(ImageResizer.fireBaseBitmap);
+                Log.i("pic", ImageUtil.convert(ImageResizer.fireBaseBitmap));
+                new ImgToFirebase().execute(profPicDb);
+            }
 
-            imgToBase64();
         }
     }
 
-    private void imgToBase64 () {
+    public static class ImgToFirebase extends AsyncTask<DatabaseReference, Integer, Void> {
 
-        File imageJpg = new File(manager.getPhotoPath());
-        try {
-            FileInputStream fiStream = new FileInputStream(imageJpg);
-            aByte = new byte[(int)imageJpg.length()];
-            fiStream.read(aByte);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        @Override
+        protected Void doInBackground(DatabaseReference... params) {
+
+            params[0].child("userdata")
+                    .child("profilepic")
+                    .setValue(GlobalVariables.profileImgBase64);
+
+            return null;
         }
-
-        GlobalVariables.profileImgBase64 = Base64.encodeToString(aByte, Base64.DEFAULT);
-
-        new FileManager.ImgToFirebase().execute(profPicDb);
     }
 
 }

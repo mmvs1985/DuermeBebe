@@ -1,12 +1,7 @@
 package com.pmcoder.duermebeb.models;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Environment;
-
-import com.google.firebase.database.DatabaseReference;
-import com.pmcoder.duermebeb.golbal.GlobalVariables;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -46,17 +41,4 @@ public class FileManager {
         return photoPath;
     }
 
-    public static class ImgToFirebase extends AsyncTask <DatabaseReference, Integer, String>{
-
-
-        @Override
-        protected String doInBackground(DatabaseReference... params) {
-
-            params[0].child("userdata")
-                    .child("profilepic")
-                    .setValue(GlobalVariables.profileImgBase64);
-
-            return null;
-        }
-    }
 }

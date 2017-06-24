@@ -1,4 +1,4 @@
-package com.pmcoder.duermebeb.golbal;
+package com.pmcoder.duermebeb.global;
 
 import android.view.View;
 import com.google.firebase.database.FirebaseDatabase;

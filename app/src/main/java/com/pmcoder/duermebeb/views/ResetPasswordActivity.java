@@ -11,7 +11,7 @@ import android.widget.*;
 import com.google.android.gms.tasks.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.golbal.GlobalVariables;
+import com.pmcoder.duermebeb.global.GlobalVariables;
 
 public class ResetPasswordActivity extends AppCompatActivity implements View.OnClickListener{
 

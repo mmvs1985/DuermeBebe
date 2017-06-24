@@ -12,10 +12,10 @@ import android.view.View;
 import android.widget.Toast;
 import com.google.android.gms.tasks.*;
 import com.google.firebase.storage.*;
-import com.pmcoder.duermebeb.golbal.GlobalVariables;
+import com.pmcoder.duermebeb.global.GlobalVariables;
 
 import java.io.IOException;
-import static com.pmcoder.duermebeb.golbal.GlobalVariables.*;
+import static com.pmcoder.duermebeb.global.GlobalVariables.*;
 
 public class MediaPlayerMainService extends Service implements MediaPlayer.OnPreparedListener {
 

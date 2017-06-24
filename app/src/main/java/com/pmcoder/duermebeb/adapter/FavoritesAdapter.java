@@ -11,12 +11,12 @@ import android.widget.*;
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.golbal.GlobalVariables;
+import com.pmcoder.duermebeb.global.GlobalVariables;
 import com.pmcoder.duermebeb.interfaces.Communicator;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import java.util.ArrayList;
-import static com.pmcoder.duermebeb.golbal.GlobalVariables.LOADING;
-import static com.pmcoder.duermebeb.golbal.GlobalVariables.artistChannelDB;
+import static com.pmcoder.duermebeb.global.GlobalVariables.LOADING;
+import static com.pmcoder.duermebeb.global.GlobalVariables.artistChannelDB;
 import static com.pmcoder.duermebeb.views.MainActivity.mMPService;
 
 
@@ -26,7 +26,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
     private int recurso;
     private ArrayList<ElementoPlaylist> cancion;
 
-    private DatabaseReference databaseReference = com.pmcoder.duermebeb.golbal.GlobalVariables.fbDatabase
+    private DatabaseReference databaseReference = com.pmcoder.duermebeb.global.GlobalVariables.fbDatabase
             .getReference().child("users");
     private DatabaseReference favDatabase = databaseReference
             .child(GlobalVariables.uid).child("favorites");

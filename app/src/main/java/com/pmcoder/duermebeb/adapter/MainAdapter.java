@@ -10,13 +10,13 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.golbal.GlobalVariables;
+import com.pmcoder.duermebeb.global.GlobalVariables;
 import com.pmcoder.duermebeb.interfaces.Communicator;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 
 import java.util.*;
-import static com.pmcoder.duermebeb.golbal.GlobalVariables.LOADING;
-import static com.pmcoder.duermebeb.golbal.GlobalVariables.artistChannelDB;
+import static com.pmcoder.duermebeb.global.GlobalVariables.LOADING;
+import static com.pmcoder.duermebeb.global.GlobalVariables.artistChannelDB;
 import static com.pmcoder.duermebeb.views.MainActivity.mMPService;
 
 
@@ -25,8 +25,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
     private Activity activity;
     private int recurso;
     private ArrayList<ElementoPlaylist> cancion;
-    private DatabaseReference databaseReference = com.pmcoder.duermebeb.golbal.GlobalVariables.fbDatabase.getReference().child("users");
-    private DatabaseReference userRef = databaseReference.child(com.pmcoder.duermebeb.golbal.GlobalVariables.uid).child("favorites");
+    private DatabaseReference databaseReference = com.pmcoder.duermebeb.global.GlobalVariables.fbDatabase.getReference().child("users");
+    private DatabaseReference userRef = databaseReference.child(com.pmcoder.duermebeb.global.GlobalVariables.uid).child("favorites");
     private Communicator comm;
 
     public MainAdapter(ArrayList<ElementoPlaylist> cancion, Activity activity, int recurso) {
@@ -101,9 +101,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
 
                     int i = 0;
 
-                    while (i < com.pmcoder.duermebeb.golbal.GlobalVariables.mainListArray.size()){
-                        if (com.pmcoder.duermebeb.golbal.GlobalVariables.mainListArray.get(i).getName().equals(elementoPlaylist.getName())){
-                            com.pmcoder.duermebeb.golbal.GlobalVariables.mainListArray.get(i).setLike("false");
+                    while (i < com.pmcoder.duermebeb.global.GlobalVariables.mainListArray.size()){
+                        if (com.pmcoder.duermebeb.global.GlobalVariables.mainListArray.get(i).getName().equals(elementoPlaylist.getName())){
+                            com.pmcoder.duermebeb.global.GlobalVariables.mainListArray.get(i).setLike("false");
                         }
                         i++;
                     }
@@ -123,9 +123,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
                     return;
                 }
 
-                com.pmcoder.duermebeb.golbal.GlobalVariables.web = artistChannelDB.get(elementoPlaylist.getArtist()).getWeb();
-                com.pmcoder.duermebeb.golbal.GlobalVariables.youtube = artistChannelDB.get(elementoPlaylist.getArtist()).getYoutube();
-                com.pmcoder.duermebeb.golbal.GlobalVariables.soundcloud = artistChannelDB.get(elementoPlaylist.getArtist()).getSoundcloud();
+                com.pmcoder.duermebeb.global.GlobalVariables.web = artistChannelDB.get(elementoPlaylist.getArtist()).getWeb();
+                com.pmcoder.duermebeb.global.GlobalVariables.youtube = artistChannelDB.get(elementoPlaylist.getArtist()).getYoutube();
+                com.pmcoder.duermebeb.global.GlobalVariables.soundcloud = artistChannelDB.get(elementoPlaylist.getArtist()).getSoundcloud();
                 comm.respond(elementoPlaylist.getArtist(), elementoPlaylist.getName());
             }
         });

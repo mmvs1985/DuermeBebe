@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.adapter.MainAdapter;
-import com.pmcoder.duermebeb.golbal.GlobalVariables;
+import com.pmcoder.duermebeb.global.GlobalVariables;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 
 public class MainFragment extends Fragment {
@@ -58,7 +58,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                com.pmcoder.duermebeb.golbal.GlobalVariables.dataBaseMainArray.clear();
+                com.pmcoder.duermebeb.global.GlobalVariables.dataBaseMainArray.clear();
 
                 for (DataSnapshot songlist: dataSnapshot.getChildren()) {
 

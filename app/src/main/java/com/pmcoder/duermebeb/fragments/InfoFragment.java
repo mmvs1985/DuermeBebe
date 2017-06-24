@@ -9,9 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.golbal.GlobalVariables;
+import com.pmcoder.duermebeb.global.GlobalVariables;
 import com.pmcoder.duermebeb.interfaces.Communicator;
 
 import static android.content.Intent.ACTION_VIEW;

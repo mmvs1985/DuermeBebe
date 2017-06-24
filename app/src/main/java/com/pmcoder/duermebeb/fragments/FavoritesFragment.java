@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.adapter.FavoritesAdapter;
-import com.pmcoder.duermebeb.golbal.GlobalVariables;
+import com.pmcoder.duermebeb.global.GlobalVariables;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 
 public class FavoritesFragment extends Fragment {

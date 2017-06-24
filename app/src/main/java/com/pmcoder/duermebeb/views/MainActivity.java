@@ -1,37 +1,37 @@
 package com.pmcoder.duermebeb.views;
 
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.*;
 import android.support.v4.app.*;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.view.*;
 import android.widget.*;
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.*;
 import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.fragments.*;
-import com.pmcoder.duermebeb.golbal.GlobalVariables;
+import com.pmcoder.duermebeb.global.GlobalVariables;
 import com.pmcoder.duermebeb.interfaces.Communicator;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
+import com.pmcoder.duermebeb.models.ImageUtil;
 import com.pmcoder.duermebeb.services.MediaPlayerMainService;
 import static com.pmcoder.duermebeb.R.drawable.*;
 import static com.pmcoder.duermebeb.R.string.*;
 import static com.pmcoder.duermebeb.fragments.MainFragment.mainAdapter;
 import static com.pmcoder.duermebeb.services.MediaPlayerMainService.*;
-import static com.pmcoder.duermebeb.golbal.GlobalVariables.*;
+import static com.pmcoder.duermebeb.global.GlobalVariables.*;
 
 public class MainActivity extends AppCompatActivity implements Communicator, View.OnClickListener{
 
@@ -49,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
     private ImageView profilePicture;
     private DatabaseReference mDatabaseReference = GlobalVariables.fbDatabase.getReference();
     private DatabaseReference mArtistChannel = mDatabaseReference.child("artist-channel");
+    private DatabaseReference userData = mDatabaseReference
+            .child("users").child(GlobalVariables.uid).child("userdata");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,10 +158,71 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        toggle.syncState();
 
-        DatabaseReference userData = mDatabaseReference
-                .child("users").child(GlobalVariables.uid).child("userdata");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        registerReceiver(mReceiver, intentFilter);
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
+        GlobalVariables.uid = user.getUid();
+
+        bNView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.play_pause_menu:
+                        if (fragmentStatus.equals(getString(R.string.start))){
+                            if (mainListArray.size() < 1){
+                                Snackbar.make(getCurrentFocus().findFocus(), R.string.list_empty,
+                                        Snackbar.LENGTH_LONG).show();
+                                break;
+                            }
+                        } else if (fragmentStatus.equals(getString(R.string.favoritos))) {
+                            if (favoritesArray.size() < 1){
+                                Snackbar.make(getCurrentFocus().findFocus(), R.string.list_empty,
+                                        Snackbar.LENGTH_LONG).show();
+                                break;
+                            }
+                        }
+
+                        int i = (int) Math.floor(Math.random() * mainAdapter.getItemCount());
+                        if (mMPService.mp == null){
+                            Toast
+                                    .makeText(getApplicationContext(),
+                                            R.string.shuffle_starts,
+                                            Toast.LENGTH_SHORT).show();
+                            if (GlobalVariables.viewHolder != null){
+                                GlobalVariables.viewHolder.setVisibility(View.GONE);
+                            }
+                            mMPService.setPlaying(mainListArray.get(i).getUrlsong());
+                            bNView.getMenu().findItem(R.id.play_pause_menu).setIcon(shuffle_48);
+                        }else {
+                            mMPService.setPlaying(songNow);
+                        }
+
+                        break;
+
+                    case R.id.stop_menu:
+                        mMPService.stop();
+
+                        break;
+
+                }
+                return false;
+            }
+        });
+
+        toggle.syncState();
 
         userData.keepSynced(true);
 
@@ -182,15 +246,22 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
                 username.setText(saludo);
                 mail.setText(GlobalVariables.mailUser);
 
-                if (GlobalVariables.profileImgBase64 != null && !GlobalVariables.profileImgBase64.equals("")){
-                    Glide.with(getApplicationContext())
-                            .load(Base64.decode(GlobalVariables.profileImgBase64, Base64.DEFAULT))
-                            .into(profilePicture);
+                if (GlobalVariables.profileImgBase64 != null &&
+                        !GlobalVariables.profileImgBase64.equals("")){
+                    Bitmap bmp =
+                            cropBitmap(ImageUtil
+                                    .convert(GlobalVariables.profileImgBase64),
+                                    profilePicture.getHeight(),
+                                    profilePicture.getWidth());
+                    profilePicture
+                            .setImageBitmap(bmp);
                 }
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
             }
         });
 
@@ -250,69 +321,6 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
             }
         });
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        registerReceiver(mReceiver, intentFilter);
-
-    }
-
-    @Override
-    public void onStart(){
-        super.onStart();
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assert user != null;
-        GlobalVariables.uid = user.getUid();
-
-        bNView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.play_pause_menu:
-                        if (fragmentStatus.equals(getString(R.string.start))){
-                            if (mainListArray.size() < 1){
-                                Snackbar.make(getCurrentFocus().findFocus(), R.string.list_empty,
-                                        Snackbar.LENGTH_LONG).show();
-                                break;
-                            }
-                        } else if (fragmentStatus.equals(getString(R.string.favoritos))) {
-                            if (favoritesArray.size() < 1){
-                                Snackbar.make(getCurrentFocus().findFocus(), R.string.list_empty,
-                                        Snackbar.LENGTH_LONG).show();
-                                break;
-                            }
-                        }
-
-                        int i = (int) Math.floor(Math.random() * mainAdapter.getItemCount());
-                        if (mMPService.mp == null){
-                            Toast
-                                    .makeText(getApplicationContext(),
-                                            R.string.shuffle_starts,
-                                            Toast.LENGTH_SHORT).show();
-                            if (GlobalVariables.viewHolder != null){
-                                GlobalVariables.viewHolder.setVisibility(View.GONE);
-                            }
-                            mMPService.setPlaying(mainListArray.get(i).getUrlsong());
-                            bNView.getMenu().findItem(R.id.play_pause_menu).setIcon(shuffle_48);
-                        }else {
-                            mMPService.setPlaying(songNow);
-                        }
-
-                        break;
-
-                    case R.id.stop_menu:
-                        mMPService.stop();
-
-                        break;
-
-                }
-                return false;
-            }
-        });
 
     }
 
@@ -361,7 +369,10 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
     public void onPause(){
         super.onPause();
 
-        unregisterReceiver(mReceiver);
+        if (mReceiver.isInitialStickyBroadcast() || mReceiver.isOrderedBroadcast()) {
+            unregisterReceiver(mReceiver);
+        }
+
     }
 
     @Override
@@ -428,4 +439,29 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
 
         }
     }
+
+    public Bitmap cropBitmap(Bitmap original, int height, int width) {
+        Bitmap croppedImage = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(croppedImage);
+
+        Rect srcRect = new Rect(0, 0, original.getWidth(), original.getHeight());
+        Rect dstRect = new Rect(0, 0, width, height);
+
+        int dx = (srcRect.width() - dstRect.width()) / 2;
+        int dy = (srcRect.height() - dstRect.height()) / 2;
+
+        // If the srcRect is too big, use the center part of it.
+        srcRect.inset(Math.max(0, dx), Math.max(0, dy));
+
+        // If the dstRect is too big, use the center part of it.
+        dstRect.inset(Math.max(0, -dx), Math.max(0, -dy));
+
+        // Draw the cropped bitmap in the center
+        canvas.drawBitmap(original, srcRect, dstRect, null);
+
+        original.recycle();
+
+        return croppedImage;
+    }
+
 }

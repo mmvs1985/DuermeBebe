@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
-
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.adapter.SoundsAdapter;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;

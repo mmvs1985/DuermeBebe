@@ -14,7 +14,7 @@ import com.google.android.gms.tasks.*;
 import com.google.firebase.auth.*;
 import com.google.firebase.database.DatabaseReference;
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.golbal.GlobalVariables;
+import com.pmcoder.duermebeb.global.GlobalVariables;
 
 public class CreateAccountActivity extends AppCompatActivity implements View.OnClickListener {
 
