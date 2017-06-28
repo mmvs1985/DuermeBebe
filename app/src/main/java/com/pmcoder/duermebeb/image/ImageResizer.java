@@ -1,4 +1,4 @@
-package com.pmcoder.duermebeb.models;
+package com.pmcoder.duermebeb.image;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

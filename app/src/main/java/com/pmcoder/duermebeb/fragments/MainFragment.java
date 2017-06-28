@@ -26,11 +26,16 @@ public class MainFragment extends Fragment {
     private DatabaseReference favorites = mDatabaseReference
             .child("users").child(GlobalVariables.uid).child("favorites");
     private RecyclerView recyclerView;
+    private String title;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_main, container, false);
+
+        if (getArguments() != null){
+            title = getArguments().getString("title");
+        }
 
         GlobalVariables.mainListArray.add(new ElementoPlaylist("", "Cargando elementos", "", ""));
 

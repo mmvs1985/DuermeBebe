@@ -20,8 +20,8 @@ import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.fragments.ProfilePic;
 import com.pmcoder.duermebeb.global.GlobalVariables;
 import com.pmcoder.duermebeb.models.FileManager;
-import com.pmcoder.duermebeb.models.ImageResizer;
-import com.pmcoder.duermebeb.models.ImageUtil;
+import com.pmcoder.duermebeb.image.ImageResizer;
+import com.pmcoder.duermebeb.image.ImageUtil;
 import java.io.File;
 import de.hdodenhof.circleimageview.CircleImageView;
 

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.global.GlobalVariables;
-import com.pmcoder.duermebeb.models.ImageUtil;
+import com.pmcoder.duermebeb.image.ImageUtil;
 
 public class ProfilePic extends Fragment {
 

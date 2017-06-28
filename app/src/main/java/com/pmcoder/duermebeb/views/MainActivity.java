@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.*;
 import android.support.v4.app.*;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,14 +20,16 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
 import android.widget.*;
+import android.graphics.*;
 import com.google.firebase.auth.*;
 import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
+import com.pmcoder.duermebeb.adapter.ViewPagerAdapter;
 import com.pmcoder.duermebeb.fragments.*;
 import com.pmcoder.duermebeb.global.GlobalVariables;
 import com.pmcoder.duermebeb.interfaces.Communicator;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
-import com.pmcoder.duermebeb.models.ImageUtil;
+import com.pmcoder.duermebeb.image.ImageUtil;
 import com.pmcoder.duermebeb.services.MediaPlayerMainService;
 import static com.pmcoder.duermebeb.R.drawable.*;
 import static com.pmcoder.duermebeb.R.string.*;
@@ -45,12 +49,15 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
     private DrawerLayout drawer;
     private String fragmentStatus;
     private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private ViewPagerAdapter viewPagerAdapter;
     private InfoFragment infoFrag;
     private ImageView profilePicture;
     private DatabaseReference mDatabaseReference = GlobalVariables.fbDatabase.getReference();
     private DatabaseReference mArtistChannel = mDatabaseReference.child("artist-channel");
     private DatabaseReference userData = mDatabaseReference
             .child("users").child(GlobalVariables.uid).child("userdata");
+    private int tabIcons[] = {R.drawable.traklist_48, R.drawable.sounds_48};
 
 
     @Override
@@ -61,12 +68,34 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarmain);
         setSupportActionBar(toolbar);
 
-        tabLayout = (TabLayout) findViewById(R.id.tablayout);
-        tabLayout.addTab(tabLayout.newTab().setText("Canciones"));
-        tabLayout.addTab(tabLayout.newTab().setText("Sonidos"));
-        tabLayout.setOnClickListener(this);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        loadViewPager(viewPager);
 
-        fragmentManager.beginTransaction().add(R.id.container, new MainFragment()).commit();
+        tabLayout = (TabLayout) findViewById(R.id.tablayout);
+        tabLayout.setupWithViewPager(viewPager);
+        setTabIcons();
+        setIconColor(tabLayout.getTabAt(tabLayout.getSelectedTabPosition()), "#FFFFFF");
+        for (int i = 1; i < viewPagerAdapter.getCount(); i++){
+            tabLayout.getTabAt(i)
+                    .getIcon()
+                    .setColorFilter(Color.parseColor("#4DD0E1"), PorterDuff.Mode.SRC_IN);
+        }
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                setIconColor(tab, "#FFFFFF");
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                setIconColor(tab, "#4DD0E1");
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         mMPService = new MediaPlayerMainService(getApplication());
 
@@ -89,13 +118,13 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
+/*
                 boolean fragmentTransaction = false;
                 Fragment fragment = null;
-
-                switch(item.getItemId()){
+*/
+                switch(item.getItemId()){/*
                     case R.id.nav_inicio:
-                        fragmentStatus = getString(R.string.start);
+                        /*fragmentStatus = getString(R.string.start);
                         item.setChecked(true);
                         fragmentTransaction = true;
                         fragment = new MainFragment();
@@ -109,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
                         fragment = new FavoritesFragment();
                         setSalir(0);
                         break;
-
+*/
                     case R.id.nav_share:
                         setSalir(0);
                         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -134,14 +163,14 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
                         break;
 
                 }
-
+/*
                 if (fragmentTransaction){
                     fragmentManager.beginTransaction().replace(R.id.container, fragment)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .commit();
                     drawer.closeDrawers();
                 }
-
+*/
                 return false;
             }
         });
@@ -152,12 +181,6 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
                 .getHeaderView(0)
                 .findViewById(R.id.imgprofile);
         profilePicture.setOnClickListener(this);
-
-    }
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
 
     }
 
@@ -291,37 +314,6 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
 
             }
         });
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-
-                int i = tab.getPosition();
-                if (i == 0) {
-                    fragmentManager
-                            .beginTransaction()
-                            .replace(R.id.container, new MainFragment())
-                            .commit();
-                } else if (i == 1) {
-                    fragmentManager
-                            .beginTransaction()
-                            .replace(R.id.container, new SleepSounds())
-                            .commit();
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-
     }
 
     private void proxim (){
@@ -331,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
     @Override
     public void onBackPressed() {
 
-        if (fragmentStatus.equals("infoFragment")){
+        if (fragmentStatus != null && fragmentStatus.equals("infoFragment")){
             fragmentManager
                     .beginTransaction()
                     .remove(infoFrag)
@@ -363,6 +355,10 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
         super.onDestroy();
         mMPService.stop();
         stopService(new Intent(getBaseContext(), MediaPlayerMainService.class));
+
+        if (mReceiver.isInitialStickyBroadcast() || mReceiver.isOrderedBroadcast()) {
+            unregisterReceiver(mReceiver);
+        }
     }
 
     @Override
@@ -373,11 +369,6 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
             unregisterReceiver(mReceiver);
         }
 
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 
     public void playPause(Boolean b){
@@ -440,7 +431,7 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
         }
     }
 
-    public Bitmap cropBitmap(Bitmap original, int height, int width) {
+    private Bitmap cropBitmap(Bitmap original, int height, int width) {
         Bitmap croppedImage = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(croppedImage);
 
@@ -462,6 +453,33 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
         original.recycle();
 
         return croppedImage;
+    }
+
+    private void loadViewPager (ViewPager viewPager) {
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragment(newFragmentInstance("Música", new MainFragment()));
+        viewPagerAdapter.addFragment(newFragmentInstance("Sonidos", new SleepSounds()));
+        viewPager.setAdapter(viewPagerAdapter);
+    }
+
+    private Fragment newFragmentInstance (String title, Fragment fragment) {
+        Bundle bundle = new Bundle();
+        bundle.putString("title", title);
+        fragment.setArguments(bundle);
+
+        return fragment;
+    }
+
+    private void setTabIcons () {
+        for (int i = 0; i < 2; i++){
+            tabLayout.getTabAt(i).setIcon(tabIcons[i]);
+        }
+    }
+
+    private void setIconColor (TabLayout.Tab tab, String color) {
+        tab.getIcon()
+                .setColorFilter(Color.parseColor(color), PorterDuff.Mode.SRC_IN);
+
     }
 
 }
