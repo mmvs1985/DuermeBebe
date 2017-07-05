@@ -51,4 +51,5 @@
     <string name="username2">Nombre de Usuario:</string>
     <string name="email">Correo Electrónico:</string>
     <string name="notprofilepic">Aún no tienes foto de Perfil</string>
+    <string name="sounds">sonidos</string>
 </resources>

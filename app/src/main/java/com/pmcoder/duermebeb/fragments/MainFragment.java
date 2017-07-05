@@ -26,18 +26,13 @@ public class MainFragment extends Fragment {
     private DatabaseReference favorites = mDatabaseReference
             .child("users").child(GlobalVariables.uid).child("favorites");
     private RecyclerView recyclerView;
-    private String title;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_main, container, false);
 
-        if (getArguments() != null){
-            title = getArguments().getString("title");
-        }
-
-        GlobalVariables.mainListArray.add(new ElementoPlaylist("", "Cargando elementos", "", ""));
+        GlobalVariables.mainListArray.add(new ElementoPlaylist(null, "Cargando elementos", null, null));
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
 
@@ -45,7 +40,8 @@ public class MainFragment extends Fragment {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         recyclerView.setLayoutManager(linearLayout);
 
-        mainAdapter = new MainAdapter(GlobalVariables.mainListArray, getActivity(), R.layout.cardview);
+        mainAdapter = new MainAdapter
+                (GlobalVariables.mainListArray, getActivity(), R.layout.cardview);
         recyclerView.setAdapter(mainAdapter);
 
         return view;
@@ -77,14 +73,17 @@ public class MainFragment extends Fragment {
                             songlist.child("icon").getValue().toString():null;
 
 
-                    GlobalVariables.dataBaseMainArray.add(new ElementoPlaylist(artist, songName, urlSong, "false", icon));
+                    GlobalVariables.dataBaseMainArray
+                            .add(new ElementoPlaylist(artist, songName, urlSong, "false", icon));
                 }
 
                 if (!GlobalVariables.mainListArray.equals(GlobalVariables.dataBaseMainArray)){
                     GlobalVariables.mainListArray.clear();
                     GlobalVariables.mainListArray = GlobalVariables.dataBaseMainArray;
 
-                    mainAdapter = new MainAdapter(GlobalVariables.mainListArray, getActivity(), R.layout.cardview);
+                    mainAdapter = new MainAdapter
+                            (GlobalVariables.mainListArray,
+                                    getActivity(), R.layout.cardview);
                     recyclerView.setAdapter(mainAdapter);
                 }
             }

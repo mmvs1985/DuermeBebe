@@ -1,5 +1,6 @@
 package com.pmcoder.duermebeb.services;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.*;
 import android.media.*;
@@ -13,28 +14,39 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.*;
 import com.google.firebase.storage.*;
 import com.pmcoder.duermebeb.global.GlobalVariables;
+import com.pmcoder.duermebeb.interfaces.Communicator;
 
+import java.io.File;
 import java.io.IOException;
 import static com.pmcoder.duermebeb.global.GlobalVariables.*;
 
 public class MediaPlayerMainService extends Service implements MediaPlayer.OnPreparedListener {
 
     private FirebaseStorage fBStorage = FirebaseStorage.getInstance();
-    private StorageReference sReference = fBStorage.getReferenceFromUrl("gs://duerme-bebe.appspot.com").child("music");
+    private StorageReference sReference = fBStorage
+            .getReferenceFromUrl("gs://duerme-bebe.appspot.com")
+            .child("music");
     public MediaPlayer mp = null;
     public static String songNow;
-    private Context ctx;
+    public static File soundNow;
+    private Activity ctx;
+    private Communicator comm = null;
 
     public MediaPlayerMainService () {
         //Constructor vacío obligatorio
     }
-    public MediaPlayerMainService(Context ctx) {
+
+    public MediaPlayerMainService(Activity ctx) {
         this.ctx = ctx;
     }
 
     @Override
     public void onCreate(){
         super.onCreate();
+
+        if (comm == null){
+            comm = (Communicator) ctx;
+        }
     }
 
     @Override
@@ -44,6 +56,9 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
     }
 
     public void preparePlaying(String song){
+        if (comm == null){
+            comm = (Communicator) ctx;
+        }
 
         if (!GlobalVariables.funcionaInternet()){
             try{
@@ -56,7 +71,8 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
                 e.printStackTrace();
             }
             Toast.makeText(ctx, "Revisa tu conexión a Internet", Toast.LENGTH_LONG).show();
-            playBroadcastSender(false);
+
+            comm.playPauseButton(false);
             return;
         }
 
@@ -70,7 +86,6 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
             @Override
             public void onSuccess(Uri uri) {
                 String url = uri.toString();
-                System.out.println("La URL es: " + url);
                 mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 try {
                     mp.setDataSource(url);
@@ -99,10 +114,13 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        if (comm == null){
+            comm = (Communicator) ctx;
+        }
         mp.seekTo(0);
         mp.start();
         mp.setLooping(true);
-        playBroadcastSender(PLAYING);
+        comm.playPauseButton(PLAYING);
         LOADING = false;
         setLoadingState();
     }
@@ -114,6 +132,10 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
     }
 
     public void stop(){
+        if (comm == null){
+            comm = (Communicator) ctx;
+        }
+
         if (LOADING){return;}
         if(mp!=null){
             mp.stop();
@@ -124,10 +146,36 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
             return;
         }
         PLAYING =  false;
-        playBroadcastSender(false);
+        comm.playPauseButton(false);
     }
 
-    public void setPlaying(String song){
+    private void playPause () {
+        if (comm == null){
+            comm = (Communicator) ctx;
+        }
+        if (LOADING){return;}
+        if (PLAYING){
+            mp.pause();
+            PLAYING = false;
+            comm.playPauseButton(false);
+            setLoadingState();
+        }else {
+            mp.start();
+            PLAYING = true;
+            comm.playPauseButton(true);
+        }
+    }
+
+    public void setLoadingState(){
+        if (GlobalVariables.viewHolder != null){
+            GlobalVariables.viewHolder.setVisibility(View.GONE);
+        }
+    }
+
+    public void setPlayingUrl(String song) {
+        if (comm == null){
+            comm = (Communicator) ctx;
+        }
 
         if (LOADING){return;}
 
@@ -135,45 +183,47 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
             mp = new MediaPlayer();
             preparePlaying(song);
         }else {
-            if(song == songNow){
+            if(song.equals(songNow)){
                 playPause();
             }else {
                 mp.stop();
                 mp.reset();
-                playBroadcastSender(false);
+                comm.playPauseButton(false);
                 preparePlaying(song);
             }
         }
     }
 
-    private void playPause()
-    {
-        if (LOADING){return;}
-        if (PLAYING){
-            mp.pause();
-            PLAYING = false;
-            playBroadcastSender(PLAYING);
-            setLoadingState();
-        }else {
-            mp.start();
-            PLAYING = true;
-            playBroadcastSender(PLAYING);
-        }
-    }
+    public void setPlayingLocal (File song){
+        if (LOADING) return;
+        soundNow = song;
 
-    public void playBroadcastSender(Boolean b){
-        Intent i = new Intent("BROADCAST_RECEIVER");
-        i.putExtra("play", b);
-        try {
-            ctx.sendBroadcast(i);
-        }catch (NullPointerException e){
-            Log.e("SendBroadcast: ", "Error "+ e);
+        if (comm == null){
+            comm = (Communicator) ctx;
         }
-    }
 
-    public void setLoadingState(){
-        if (GlobalVariables.viewHolder != null){
-            GlobalVariables.viewHolder.setVisibility(View.GONE);
+        if (mp == null){
+            mp = new MediaPlayer();
+            try {
+                mp.setDataSource(song.getAbsolutePath());
+                mp.prepare();
+                mp.setOnPreparedListener(this);
+                PLAYING = true;
+                songNow = song.getAbsolutePath();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            if (PLAYING){
+                mp.pause();
+                comm.playPauseButton(PLAYING = false);
+            }
+            else {
+                mp.start();
+                comm.playPauseButton(PLAYING = true);
+            }
+
         }
     }
 }

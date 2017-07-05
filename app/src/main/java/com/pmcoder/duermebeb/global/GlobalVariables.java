@@ -10,7 +10,8 @@ import java.lang.Runtime;
 
 public class GlobalVariables {
 
-    public static Boolean PLAYING, LOADING = false;
+    public static Boolean PLAYING = false,
+            LOADING = false;
     public static Boolean persistence = false;
     public static String mailUser, nameUser, uid = "", infoArtist, infoSong, youtube, soundcloud, web;
     public static int EXIT = 0;
@@ -22,6 +23,8 @@ public class GlobalVariables {
     public static ArrayList<ElementoPlaylist> dataBaseMainArray = new ArrayList<>();
     public static ArrayList<ElementoPlaylist> favoritesArray = new ArrayList<>();
     public static ArrayList<ElementoPlaylist> databaseFavArray = new ArrayList<>();
+    public static ArrayList<ElementoPlaylist> soundsArray = new ArrayList<>();
+    public static ArrayList<ElementoPlaylist> databaseSoundsArray = new ArrayList<>();
 
     public static Map<String, ElementoPlaylist> artistChannelDB = new HashMap<>();
     public static Map<String, ElementoPlaylist> artistSyncDB = new HashMap<>();

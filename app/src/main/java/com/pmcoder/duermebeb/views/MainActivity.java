@@ -1,15 +1,11 @@
 package com.pmcoder.duermebeb.views;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.*;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
@@ -31,6 +27,7 @@ import com.pmcoder.duermebeb.interfaces.Communicator;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import com.pmcoder.duermebeb.image.ImageUtil;
 import com.pmcoder.duermebeb.services.MediaPlayerMainService;
+import java.io.File;
 import static com.pmcoder.duermebeb.R.drawable.*;
 import static com.pmcoder.duermebeb.R.string.*;
 import static com.pmcoder.duermebeb.fragments.MainFragment.mainAdapter;
@@ -39,17 +36,14 @@ import static com.pmcoder.duermebeb.global.GlobalVariables.*;
 
 public class MainActivity extends AppCompatActivity implements Communicator, View.OnClickListener{
 
-    public static NavigationView navigationView;
-    public static MediaPlayerMainService mMPService;
-    private static BottomNavigationView bNView;
+    private NavigationView navigationView;
+    private MediaPlayerMainService mMPService;
+    private BottomNavigationView bNView;
     private FragmentManager fragmentManager = getSupportFragmentManager();
-    private BroadcastReceiver mReceiver;
-    private IntentFilter intentFilter;
     private ActionBarDrawerToggle toggle;
     private DrawerLayout drawer;
     private String fragmentStatus;
     private TabLayout tabLayout;
-    private ViewPager viewPager;
     private ViewPagerAdapter viewPagerAdapter;
     private InfoFragment infoFrag;
     private ImageView profilePicture;
@@ -65,24 +59,58 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fragmentStatus = getString(R.string.start);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarmain);
         setSupportActionBar(toolbar);
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         loadViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (position == 1){
+                    fragmentStatus = getString(R.string.sounds);
+                } else {
+                    fragmentStatus = getString(R.string.start);
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
         setTabIcons();
         setIconColor(tabLayout.getTabAt(tabLayout.getSelectedTabPosition()), "#FFFFFF");
+
         for (int i = 1; i < viewPagerAdapter.getCount(); i++){
-            tabLayout.getTabAt(i)
-                    .getIcon()
-                    .setColorFilter(Color.parseColor("#4DD0E1"), PorterDuff.Mode.SRC_IN);
+            try {
+                tabLayout.getTabAt(i)
+                        .getIcon()
+                        .setColorFilter(Color.parseColor("#4DD0E1"), PorterDuff.Mode.SRC_IN);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 1){
+                    fragmentStatus = getString(R.string.start);
+                } else {
+                    fragmentStatus = getString(R.string.sounds);
+                }
+
                 setIconColor(tab, "#FFFFFF");
             }
 
@@ -97,10 +125,7 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
             }
         });
 
-        mMPService = new MediaPlayerMainService(getApplication());
-
-        mReceiver = new PlayReceiver();
-        intentFilter= new IntentFilter("BROADCAST_RECEIVER");
+        mMPService = new MediaPlayerMainService(this);
 
         Intent mediaService = new Intent(this, MediaPlayerMainService.class);
         startService(mediaService);
@@ -118,27 +143,13 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-/*
-                boolean fragmentTransaction = false;
-                Fragment fragment = null;
-*/
-                switch(item.getItemId()){/*
-                    case R.id.nav_inicio:
-                        /*fragmentStatus = getString(R.string.start);
-                        item.setChecked(true);
-                        fragmentTransaction = true;
-                        fragment = new MainFragment();
+
+                switch(item.getItemId()){
+                    case R.id.nav_favoritos:
                         setSalir(0);
+                        proxim();
                         break;
 
-                    case R.id.nav_favoritos:
-                        fragmentStatus = getString(R.string.favoritos);
-                        item.setChecked(true);
-                        fragmentTransaction = true;
-                        fragment = new FavoritesFragment();
-                        setSalir(0);
-                        break;
-*/
                     case R.id.nav_share:
                         setSalir(0);
                         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -163,14 +174,6 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
                         break;
 
                 }
-/*
-                if (fragmentTransaction){
-                    fragmentManager.beginTransaction().replace(R.id.container, fragment)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                            .commit();
-                    drawer.closeDrawers();
-                }
-*/
                 return false;
             }
         });
@@ -182,13 +185,6 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
                 .findViewById(R.id.imgprofile);
         profilePicture.setOnClickListener(this);
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        registerReceiver(mReceiver, intentFilter);
     }
 
     @Override
@@ -204,33 +200,26 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.play_pause_menu:
-                        if (fragmentStatus.equals(getString(R.string.start))){
-                            if (mainListArray.size() < 1){
+
+                        if ( fragmentStatus.equals(getString(R.string.start))){
+                            if (mainListArray.size() < 2){
                                 Snackbar.make(getCurrentFocus().findFocus(), R.string.list_empty,
                                         Snackbar.LENGTH_LONG).show();
                                 break;
                             }
-                        } else if (fragmentStatus.equals(getString(R.string.favoritos))) {
-                            if (favoritesArray.size() < 1){
-                                Snackbar.make(getCurrentFocus().findFocus(), R.string.list_empty,
-                                        Snackbar.LENGTH_LONG).show();
-                                break;
+                            else {
+                                playShuffleUrl();
                             }
                         }
-
-                        int i = (int) Math.floor(Math.random() * mainAdapter.getItemCount());
-                        if (mMPService.mp == null){
-                            Toast
-                                    .makeText(getApplicationContext(),
-                                            R.string.shuffle_starts,
-                                            Toast.LENGTH_SHORT).show();
-                            if (GlobalVariables.viewHolder != null){
-                                GlobalVariables.viewHolder.setVisibility(View.GONE);
+                        else if (fragmentStatus.equals(getString(R.string.sounds))) {
+                            if (soundsArray.size() < 2){
+                                Snackbar.make(getCurrentFocus().findFocus(), R.string.list_empty,
+                                        Snackbar.LENGTH_LONG).show();
+                                break;
                             }
-                            mMPService.setPlaying(mainListArray.get(i).getUrlsong());
-                            bNView.getMenu().findItem(R.id.play_pause_menu).setIcon(shuffle_48);
-                        }else {
-                            mMPService.setPlaying(songNow);
+                            else {
+                                playShuffleLocal();
+                            }
                         }
 
                         break;
@@ -254,12 +243,14 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.hasChildren()) {return;}
 
-                View v = MainActivity.navigationView.getHeaderView(0);
+                View v = navigationView.getHeaderView(0);
 
                 GlobalVariables.nameUser = dataSnapshot.child("name").getValue().toString();
                 GlobalVariables.mailUser = dataSnapshot.child("email").getValue().toString();
-                if (dataSnapshot.child("profilepic").exists() && dataSnapshot.child("profilepic").getValue() != null){
-                    GlobalVariables.profileImgBase64 = dataSnapshot.child("profilepic").getValue().toString();
+                if (dataSnapshot.child("profilepic").exists()
+                        && dataSnapshot.child("profilepic").getValue() != null){
+                    GlobalVariables.profileImgBase64 = dataSnapshot
+                            .child("profilepic").getValue().toString();
                 }
 
                 TextView username = (TextView) v.findViewById(R.id.usernavname);
@@ -316,10 +307,6 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
         });
     }
 
-    private void proxim (){
-        Toast.makeText(getApplication(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     public void onBackPressed() {
 
@@ -355,32 +342,30 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
         super.onDestroy();
         mMPService.stop();
         stopService(new Intent(getBaseContext(), MediaPlayerMainService.class));
-
-        if (mReceiver.isInitialStickyBroadcast() || mReceiver.isOrderedBroadcast()) {
-            unregisterReceiver(mReceiver);
-        }
     }
-
+        //Controla el ícono del botón de play
     @Override
-    public void onPause(){
-        super.onPause();
-
-        if (mReceiver.isInitialStickyBroadcast() || mReceiver.isOrderedBroadcast()) {
-            unregisterReceiver(mReceiver);
-        }
-
-    }
-
-    public void playPause(Boolean b){
+    public void playPauseButton(Boolean b){
             if(b){
-                this.bNView.getMenu().findItem(R.id.play_pause_menu).setIcon(pause_48);
+                bNView.getMenu().findItem(R.id.play_pause_menu).setIcon(pause_48);
             }else {
-                this.bNView.getMenu().findItem(R.id.play_pause_menu).setIcon(circled_play_48);
+                bNView.getMenu().findItem(R.id.play_pause_menu).setIcon(circled_play_48);
             }
         }
 
     @Override
-    public void respond(String autor, String song) {
+    public void setPlayingUrl(String song) {
+        mMPService.setPlayingUrl(song);
+    }
+
+    @Override
+    public void setPlayingLocal(File song){
+        mMPService.setPlayingLocal(song);
+    }
+
+    //Se maneja la apertura y cierre del fragment informativo
+    @Override
+    public void openInfoFragment(String autor, String song) {
 
         GlobalVariables.infoArtist = autor;
         GlobalVariables.infoSong = song;
@@ -393,17 +378,15 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
                 .commit();
 
         drawer.closeDrawers();
-
-        fragmentStatus = "infoFragment";
     }
 
     @Override
-    public void closeNotificationFragment() {
+    public void closeInfoFragment() {
 
         setSalir(0);
 
     }
-
+        //Recibo eventos onClick
     @Override
     public void onClick(View v) {
 
@@ -417,20 +400,7 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
 
     }
 
-    public static class PlayReceiver extends BroadcastReceiver{
-
-        public PlayReceiver(){}
-
-        MainActivity mainActivity = new MainActivity();
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-                mainActivity.playPause(intent.getBooleanExtra("play", false));
-
-        }
-    }
-
+        //Se recorta la foto de perfil del Header en el NavigationView
     private Bitmap cropBitmap(Bitmap original, int height, int width) {
         Bitmap croppedImage = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(croppedImage);
@@ -455,31 +425,77 @@ public class MainActivity extends AppCompatActivity implements Communicator, Vie
         return croppedImage;
     }
 
+        //Se cargan los fragments de Música y Sonidos
     private void loadViewPager (ViewPager viewPager) {
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(newFragmentInstance("Música", new MainFragment()));
-        viewPagerAdapter.addFragment(newFragmentInstance("Sonidos", new SleepSounds()));
+        viewPagerAdapter.addFragment(loadServiceOnFragment(new MainFragment()));
+        viewPagerAdapter.addFragment(new SleepSounds());
         viewPager.setAdapter(viewPagerAdapter);
     }
 
-    private Fragment newFragmentInstance (String title, Fragment fragment) {
-        Bundle bundle = new Bundle();
-        bundle.putString("title", title);
-        fragment.setArguments(bundle);
-
+    private Fragment loadServiceOnFragment (Fragment fragment){
+        fragment.setReenterTransition(mMPService);
         return fragment;
     }
 
+        //Se añaden los íconos a las tabs
     private void setTabIcons () {
         for (int i = 0; i < 2; i++){
             tabLayout.getTabAt(i).setIcon(tabIcons[i]);
         }
     }
 
+        //Se cambia el color de los íconos
     private void setIconColor (TabLayout.Tab tab, String color) {
         tab.getIcon()
                 .setColorFilter(Color.parseColor(color), PorterDuff.Mode.SRC_IN);
 
+    }
+
+        //play Shuffle
+    public void playShuffleUrl (){
+
+        int i = (int) Math.floor(Math.random() * mainAdapter.getItemCount());
+
+        if (mMPService.mp == null){
+            Toast
+                    .makeText(getApplicationContext(),
+                            R.string.shuffle_starts,
+                            Toast.LENGTH_SHORT).show();
+            if (GlobalVariables.viewHolder != null){
+                GlobalVariables.viewHolder.setVisibility(View.GONE);
+            }
+            setPlayingUrl(mainListArray.get(i).getUrlsong());
+            bNView.getMenu().findItem(R.id.play_pause_menu).setIcon(shuffle_48);
+        }else {
+            setPlayingUrl(songNow);
+        }
+    }
+
+    public void playShuffleLocal (){
+
+        int i = (int) Math.floor(Math.random() * soundsArray.size());
+
+        if (mMPService.mp == null){
+            Toast
+                    .makeText(getApplicationContext(),
+                            R.string.shuffle_starts,
+                            Toast.LENGTH_SHORT).show();
+            if (GlobalVariables.viewHolder != null){
+                GlobalVariables.viewHolder.setVisibility(View.GONE);
+            }
+            setPlayingLocal(new File(SleepSounds.rootPath.getAbsolutePath() +
+                    "/" + soundsArray.get(i).getUrlsong()));
+            bNView.getMenu().findItem(R.id.play_pause_menu).setIcon(shuffle_48);
+        }else {
+            setPlayingLocal(new File(SleepSounds.rootPath.getAbsolutePath() +
+                    "/" + soundNow));
+        }
+    }
+
+        //Para próximos añadidos
+    private void proxim (){
+        Toast.makeText(getApplication(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
     }
 
 }

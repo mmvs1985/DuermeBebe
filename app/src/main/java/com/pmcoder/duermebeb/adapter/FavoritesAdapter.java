@@ -17,7 +17,6 @@ import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import java.util.ArrayList;
 import static com.pmcoder.duermebeb.global.GlobalVariables.LOADING;
 import static com.pmcoder.duermebeb.global.GlobalVariables.artistChannelDB;
-import static com.pmcoder.duermebeb.views.MainActivity.mMPService;
 
 
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.PictureViewHolder>{
@@ -65,11 +64,14 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
         holder.songData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (comm == null){
+                    comm = (Communicator) activity;
+                }
                 if (LOADING){return;}
                 String song = elementoPlaylist.getUrlsong();
                 holder.progressBar.setVisibility(View.VISIBLE);
                 GlobalVariables.viewHolder = holder.progressBar;
-                mMPService.setPlaying(song);
+                comm.setPlayingUrl(song);
             }
         });
 
@@ -117,7 +119,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
                 GlobalVariables.soundcloud = artistChannelDB
                         .get(elementoPlaylist.getArtist()).getSoundcloud();
 
-                comm.respond(elementoPlaylist.getArtist(), elementoPlaylist.getName());
+                comm.openInfoFragment(elementoPlaylist.getArtist(), elementoPlaylist.getName());
             }
         });
 

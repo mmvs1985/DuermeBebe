@@ -12,6 +12,7 @@
     android:id="@+id/soundscardview">
 
     <ImageView
+        android:id="@+id/iconSounds"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/pajaros"
@@ -30,11 +31,32 @@
             android:textStyle="bold"
             android:textColor="@android:color/white"/>
 
-        <ImageView
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/download96"
-            android:layout_gravity="center_horizontal|center_vertical"/>
+            android:layout_gravity="center_horizontal|center_vertical">
+
+            <ImageView
+                android:id="@+id/downloadit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/download96"
+                android:tint="@color/colorCardView"
+                android:layout_gravity="center_horizontal|center_vertical"/>
+            <ProgressBar
+                android:id="@+id/progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+            <ImageView
+                android:id="@+id/playbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/playcircle96"
+                android:tint="@color/colorCardView"
+                android:visibility="gone"/>
+
+        </FrameLayout>
 
     </FrameLayout>
 </android.support.v7.widget.CardView>

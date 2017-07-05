@@ -64,7 +64,7 @@ public class InfoFragment extends Fragment implements View.OnClickListener{
                         .commit();
 
                 comm = (Communicator)getActivity();
-                comm.closeNotificationFragment();
+                comm.closeInfoFragment();
 
                 break;
 

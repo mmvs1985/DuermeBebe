@@ -13,23 +13,23 @@ import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.global.GlobalVariables;
 import com.pmcoder.duermebeb.interfaces.Communicator;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
-
 import java.util.*;
 import static com.pmcoder.duermebeb.global.GlobalVariables.LOADING;
 import static com.pmcoder.duermebeb.global.GlobalVariables.artistChannelDB;
-import static com.pmcoder.duermebeb.views.MainActivity.mMPService;
-
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHolder>{
 
     private Activity activity;
     private int recurso;
     private ArrayList<ElementoPlaylist> cancion;
-    private DatabaseReference databaseReference = com.pmcoder.duermebeb.global.GlobalVariables.fbDatabase.getReference().child("users");
-    private DatabaseReference userRef = databaseReference.child(com.pmcoder.duermebeb.global.GlobalVariables.uid).child("favorites");
+    private DatabaseReference databaseReference = GlobalVariables.fbDatabase.getReference()
+            .child("users");
+    private DatabaseReference userRef = databaseReference
+            .child(GlobalVariables.uid).child("favorites");
     private Communicator comm;
 
-    public MainAdapter(ArrayList<ElementoPlaylist> cancion, Activity activity, int recurso) {
+    public MainAdapter
+            (ArrayList<ElementoPlaylist> cancion, Activity activity, int recurso) {
         this.cancion = cancion;
         this.activity = activity;
         this.recurso = recurso;
@@ -47,6 +47,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
     public void onBindViewHolder(final PictureViewHolder holder, final int position) {
         final ElementoPlaylist elementoPlaylist = cancion.get(position);
 
+        if (getItemCount() == 1){
+            holder.progressBar.setVisibility(View.VISIBLE);
+        }
+
         if (elementoPlaylist.getIcon() != null) {
             ArrayList<Object> arrayList = new ArrayList<>();
             arrayList.add(elementoPlaylist.getIcon());
@@ -62,12 +66,15 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
         holder.mainInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (comm == null){
+                    comm =  (Communicator) activity;
+                }
                 if (LOADING){return;}
                 String song = elementoPlaylist.getUrlsong();
 
                 holder.progressBar.setVisibility(View.VISIBLE);
                 GlobalVariables.viewHolder = holder.progressBar;
-                mMPService.setPlaying(song);
+                comm.setPlayingUrl(song);
             }
         });
         holder.fab.setChecked(elementoPlaylist.isLikeState());
@@ -126,7 +133,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
                 com.pmcoder.duermebeb.global.GlobalVariables.web = artistChannelDB.get(elementoPlaylist.getArtist()).getWeb();
                 com.pmcoder.duermebeb.global.GlobalVariables.youtube = artistChannelDB.get(elementoPlaylist.getArtist()).getYoutube();
                 com.pmcoder.duermebeb.global.GlobalVariables.soundcloud = artistChannelDB.get(elementoPlaylist.getArtist()).getSoundcloud();
-                comm.respond(elementoPlaylist.getArtist(), elementoPlaylist.getName());
+                comm.openInfoFragment(elementoPlaylist.getArtist(), elementoPlaylist.getName());
             }
         });
     }
