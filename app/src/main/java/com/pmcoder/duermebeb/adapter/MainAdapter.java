@@ -11,10 +11,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.global.GlobalVariables;
-import com.pmcoder.duermebeb.interfaces.Communicator;
+import com.pmcoder.duermebeb.views.view.MainActivity;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import java.util.*;
 import static com.pmcoder.duermebeb.global.GlobalVariables.LOADING;
+import static com.pmcoder.duermebeb.global.GlobalVariables.PLAYING;
 import static com.pmcoder.duermebeb.global.GlobalVariables.artistChannelDB;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHolder>{
@@ -26,7 +27,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
             .child("users");
     private DatabaseReference userRef = databaseReference
             .child(GlobalVariables.uid).child("favorites");
-    private Communicator comm;
+    private MainActivity comm;
 
     public MainAdapter
             (ArrayList<ElementoPlaylist> cancion, Activity activity, int recurso) {
@@ -63,18 +64,36 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
         holder.songName.setText(elementoPlaylist.getName());
         holder.artistName.setText(elementoPlaylist.getArtist());
         holder.progressBar.setVisibility(View.GONE);
+
         holder.mainInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (comm == null){
-                    comm =  (Communicator) activity;
+                    comm =  (MainActivity) activity;
                 }
                 if (LOADING){return;}
                 String song = elementoPlaylist.getUrlsong();
 
-                holder.progressBar.setVisibility(View.VISIBLE);
-                GlobalVariables.viewHolder = holder.progressBar;
-                comm.setPlayingUrl(song);
+                if (comm.setPlayingUrl(song)) {
+                    holder.progressBar.setVisibility(View.VISIBLE);
+                    if (!LOADING){
+                        holder.progressBar.setVisibility(View.GONE);
+                    }
+                }
+
+                if (PLAYING){
+                    holder.playButton.setVisibility(View.GONE);
+                    holder.pauseButton.setVisibility(View.VISIBLE);
+                }
+                else {
+
+                    holder.playButton.setVisibility(View.VISIBLE);
+                    holder.pauseButton.setVisibility(View.GONE);
+                }
+
+                GlobalVariables.progressBar = holder.progressBar;
+                GlobalVariables.pauseButton = holder.pauseButton;
+                GlobalVariables.playButton = holder.playButton;
             }
         });
         holder.fab.setChecked(elementoPlaylist.isLikeState());
@@ -122,7 +141,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
         holder.helpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comm = (Communicator) activity;
+                comm = (MainActivity) activity;
 
                 if (!artistChannelDB.containsKey(elementoPlaylist.getArtist())){
                     Toast.makeText(activity, R.string.no_artist_data, Toast.LENGTH_SHORT).show();
@@ -140,7 +159,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
 
     public class PictureViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView imgAlbum, helpButton;
+        private ImageView imgAlbum, helpButton, playButton, pauseButton;
         private TextView artistName;
         private TextView songName;
         private CheckBox fab;
@@ -151,6 +170,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.PictureViewHol
             super(itemView);
 
             imgAlbum = (ImageView) itemView.findViewById(R.id.imgrecycler);
+            playButton = (ImageView) itemView.findViewById(R.id.imgplay);
+            pauseButton = (ImageView) itemView.findViewById(R.id.imgpause);
             artistName = (TextView) itemView.findViewById(R.id.artistName);
             songName = (TextView) itemView.findViewById(R.id.songName);
             fab = (CheckBox) itemView.findViewById(R.id.fab);

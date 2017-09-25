@@ -6,7 +6,7 @@
     android:background="@color/colorPrimary"
     android:fitsSystemWindows="true"
     android:padding="10dp"
-    tools:context="com.pmcoder.duermebeb.views.LoginActivity">
+    tools:context="com.pmcoder.duermebeb.views.view.LoginActivity">
 
     <ScrollView
         android:layout_width="match_parent"

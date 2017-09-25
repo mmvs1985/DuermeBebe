@@ -7,6 +7,7 @@ import android.media.*;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +15,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.*;
 import com.google.firebase.storage.*;
 import com.pmcoder.duermebeb.global.GlobalVariables;
-import com.pmcoder.duermebeb.interfaces.Communicator;
+import com.pmcoder.duermebeb.views.view.MainActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +31,8 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
     public static String songNow;
     public static File soundNow;
     private Activity ctx;
-    private Communicator comm = null;
+    private boolean playingUrl = false;
+    private MainActivity comm = null;
 
     public MediaPlayerMainService () {
         //Constructor vacío obligatorio
@@ -45,7 +47,7 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
         super.onCreate();
 
         if (comm == null){
-            comm = (Communicator) ctx;
+            comm = (MainActivity) ctx;
         }
     }
 
@@ -56,23 +58,17 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
     }
 
     public void preparePlaying(String song){
+
         if (comm == null){
-            comm = (Communicator) ctx;
+            comm = (MainActivity) ctx;
         }
 
-        if (!GlobalVariables.funcionaInternet()){
-            try{
-                Snackbar
-                        .make(GlobalVariables.viewHolder.getRootView(),
-                                "Revisa tu conexión a Internet",
-                                Snackbar.LENGTH_LONG).show();
-                return;
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+        if (!GlobalVariables.isOnline(ctx)){
+
             Toast.makeText(ctx, "Revisa tu conexión a Internet", Toast.LENGTH_LONG).show();
 
             comm.playPauseButton(false);
+            LOADING = false;
             return;
         }
 
@@ -115,7 +111,7 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
     @Override
     public void onPrepared(MediaPlayer mp) {
         if (comm == null){
-            comm = (Communicator) ctx;
+            comm = (MainActivity) ctx;
         }
         mp.seekTo(0);
         mp.start();
@@ -133,7 +129,7 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
 
     public void stop(){
         if (comm == null){
-            comm = (Communicator) ctx;
+            comm = (MainActivity) ctx;
         }
 
         if (LOADING){return;}
@@ -151,79 +147,101 @@ public class MediaPlayerMainService extends Service implements MediaPlayer.OnPre
 
     private void playPause () {
         if (comm == null){
-            comm = (Communicator) ctx;
+            comm = (MainActivity) ctx;
         }
         if (LOADING){return;}
         if (PLAYING){
             mp.pause();
-            PLAYING = false;
-            comm.playPauseButton(false);
+            comm.playPauseButton(PLAYING = false);
             setLoadingState();
         }else {
             mp.start();
-            PLAYING = true;
-            comm.playPauseButton(true);
+            comm.playPauseButton(PLAYING = true);
         }
     }
 
     public void setLoadingState(){
-        if (GlobalVariables.viewHolder != null){
-            GlobalVariables.viewHolder.setVisibility(View.GONE);
+        if (GlobalVariables.progressBar != null){
+            GlobalVariables.progressBar.setVisibility(View.GONE);
         }
     }
 
-    public void setPlayingUrl(String song) {
+    public Boolean setPlayingUrl(String song) {
         if (comm == null){
-            comm = (Communicator) ctx;
+            comm = (MainActivity) ctx;
         }
 
-        if (LOADING){return;}
+        if(!playingUrl){
+            stop();
+            playingUrl = true;
+        }
+
+        if (LOADING){return false;}
 
         if (mp == null){
             mp = new MediaPlayer();
             preparePlaying(song);
+            return true;
         }else {
             if(song.equals(songNow)){
                 playPause();
+                return false;
             }else {
                 mp.stop();
                 mp.reset();
                 comm.playPauseButton(false);
                 preparePlaying(song);
+                return true;
             }
         }
     }
 
-    public void setPlayingLocal (File song){
-        if (LOADING) return;
-        soundNow = song;
+    public boolean setPlayingLocal (File song){
+        if (LOADING) return false;
 
-        if (comm == null){
-            comm = (Communicator) ctx;
+        if (playingUrl){
+            stop();
+            playingUrl = false;
         }
 
         if (mp == null){
             mp = new MediaPlayer();
-            try {
-                mp.setDataSource(song.getAbsolutePath());
-                mp.prepare();
-                mp.setOnPreparedListener(this);
-                PLAYING = true;
-                songNow = song.getAbsolutePath();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            soundNow = song;
+            prepareLocal(song);
         }
         else {
-            if (PLAYING){
-                mp.pause();
-                comm.playPauseButton(PLAYING = false);
+            if(soundNow.equals(song)) {
+
+                if (PLAYING) {
+                    mp.pause();
+                    playPause();
+                    PLAYING = false;
+                } else {
+                    mp.start();
+                    playPause();
+                    PLAYING = true;
+                }
             }
             else {
-                mp.start();
-                comm.playPauseButton(PLAYING = true);
+                mp.stop();
+                mp.reset();
+                prepareLocal(song);
             }
 
+        }
+
+        return PLAYING;
+    }
+
+    public void prepareLocal (File song){
+        try {
+            mp.setDataSource(song.getAbsolutePath());
+            mp.prepare();
+            mp.setOnPreparedListener(this);
+            PLAYING = true;
+            soundNow = song;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

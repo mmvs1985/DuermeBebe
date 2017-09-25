@@ -1,4 +1,4 @@
-package com.pmcoder.duermebeb.views;
+package com.pmcoder.duermebeb.views.view;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                     }
                     GlobalVariables.persistence = true;
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(), MainActivityImpl.class));
                     finish();
                 }else{
                     Log.i("SESION", "Sesión cerrada");
@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onFailure(@NonNull Exception e) {
 
-                if (GlobalVariables.funcionaInternet()){
+                if (GlobalVariables.isOnline(getApplicationContext())){
                 Snackbar.make(v, "Usuario o contraseña incorrectos", Snackbar.LENGTH_SHORT).show();
                 }else {
                     Snackbar.make(v, "Revisa tu conexión a internet", Snackbar.LENGTH_SHORT).show();

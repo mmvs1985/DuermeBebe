@@ -1,8 +1,9 @@
 package com.pmcoder.duermebeb.adapter;
 
 import android.app.Activity;
-import android.os.Environment;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.fragments.SleepSounds;
-import com.pmcoder.duermebeb.interfaces.Communicator;
+import com.pmcoder.duermebeb.global.GlobalVariables;
+import com.pmcoder.duermebeb.views.view.MainActivity;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import java.io.File;
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ public class SoundsAdapter extends RecyclerView.Adapter<SoundsAdapter.PictureVie
     private StorageReference sReference = fBStorage.
             getReferenceFromUrl("gs://duerme-bebe.appspot.com")
             .child("sounds");
-    private Communicator comm;
+    private MainActivity comm;
 
     public SoundsAdapter(Activity activity, ArrayList<ElementoPlaylist> array, int cardview) {
         this.activity = activity;
@@ -65,6 +67,16 @@ public class SoundsAdapter extends RecyclerView.Adapter<SoundsAdapter.PictureVie
         holder.download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (comm == null){
+                    comm = (MainActivity) activity;
+                }
+
+                if (!comm.checkStoragePermission()){
+                    Snackbar.make(holder.download, "No has autorizado el uso del almacenamiento",
+                            Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
                 if (elementoPlaylist.getUrlsong() == null) return;
 
                 if (!sound.exists()) {
@@ -102,11 +114,39 @@ public class SoundsAdapter extends RecyclerView.Adapter<SoundsAdapter.PictureVie
             @Override
             public void onClick(View v) {
 
-                if (comm == null){
-                    comm = (Communicator) activity;
+                if(GlobalVariables.pauseButton != null
+                && GlobalVariables.playButton != null) {
+                    GlobalVariables.pauseButton.setVisibility(View.GONE);
+                    GlobalVariables.playButton.setVisibility(View.VISIBLE);
                 }
 
-                comm.setPlayingLocal(sound);
+                GlobalVariables.pauseButton = holder.pauseButton;
+                GlobalVariables.playButton = holder.playButton;
+
+                if (comm == null){
+                    comm = (MainActivity) activity;
+                }
+
+                if(comm.setPlayingLocal(sound)){
+                    holder.pauseButton.setVisibility(View.VISIBLE);
+                    holder.playButton.setVisibility(View.GONE);
+                }
+
+            }
+        });
+
+        holder.pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (comm == null){
+                    comm = (MainActivity) activity;
+                }
+
+                if(!comm.setPlayingLocal(sound)){
+                    holder.pauseButton.setVisibility(View.GONE);
+                    holder.playButton.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -120,10 +160,11 @@ public class SoundsAdapter extends RecyclerView.Adapter<SoundsAdapter.PictureVie
 
     public class PictureViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView title;
-        public ImageView download;
-        public ImageView playButton;
-        public ProgressBar progressBar;
+        private TextView title;
+        private ImageView download;
+        private ImageView playButton;
+        private ImageView pauseButton;
+        private ProgressBar progressBar;
 
 
         public PictureViewHolder(View itemView) {
@@ -132,6 +173,7 @@ public class SoundsAdapter extends RecyclerView.Adapter<SoundsAdapter.PictureVie
             title = (TextView) itemView.findViewById(R.id.soundtitle);
             download = (ImageView) itemView.findViewById(R.id.downloadit);
             playButton = (ImageView) itemView.findViewById(R.id.playbutton);
+            pauseButton = (ImageView) itemView.findViewById(R.id.pausebutton);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressbar);
         }
     }

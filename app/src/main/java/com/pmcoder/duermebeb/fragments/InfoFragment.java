@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.global.GlobalVariables;
-import com.pmcoder.duermebeb.interfaces.Communicator;
+import com.pmcoder.duermebeb.views.presenter.MainActivityPresenter;
+import com.pmcoder.duermebeb.views.view.MainActivity;
 
 import static android.content.Intent.ACTION_VIEW;
 
@@ -23,7 +24,7 @@ public class InfoFragment extends Fragment implements View.OnClickListener{
 
     private TextView artist, song, web, soundcloud, youtube;
     private CoordinatorLayout exit;
-    private Communicator comm;
+    private MainActivity comm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,7 +64,7 @@ public class InfoFragment extends Fragment implements View.OnClickListener{
                         .remove(this)
                         .commit();
 
-                comm = (Communicator)getActivity();
+                comm = (MainActivity)getActivity();
                 comm.closeInfoFragment();
 
                 break;

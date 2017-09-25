@@ -1,4 +1,4 @@
-package com.pmcoder.duermebeb.views;
+package com.pmcoder.duermebeb.views.view;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -25,7 +25,7 @@ import com.pmcoder.duermebeb.image.ImageUtil;
 import java.io.File;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfilePicture extends AppCompatActivity implements View.OnClickListener{
+public class ProfilePictureActivity extends AppCompatActivity implements View.OnClickListener{
 
     private FileManager manager = new FileManager(this);
     private FragmentManager fragmentManager = getSupportFragmentManager();

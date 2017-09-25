@@ -55,6 +55,13 @@
                 android:src="@drawable/playcircle96"
                 android:tint="@color/colorCardView"
                 android:visibility="gone"/>
+            <ImageView
+                android:id="@+id/pausebutton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/pause_48"
+                android:tint="@color/colorCardView"
+                android:visibility="gone"/>
 
         </FrameLayout>
 

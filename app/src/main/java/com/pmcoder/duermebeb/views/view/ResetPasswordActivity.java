@@ -1,4 +1,4 @@
-package com.pmcoder.duermebeb.views;
+package com.pmcoder.duermebeb.views.view;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -46,7 +46,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
         switch (v.getId()){
             case R.id.resetPassBtn:
 
-                if (!GlobalVariables.funcionaInternet()){
+                if (!GlobalVariables.isOnline(getApplicationContext())){
                     Snackbar.make(v, "Revisa tu conexión an internet", Snackbar.LENGTH_LONG).show();
                     return;
                 }else{

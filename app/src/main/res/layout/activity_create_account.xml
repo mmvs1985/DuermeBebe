@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/colorPrimary"
-    tools:context="com.pmcoder.duermebeb.views.CreateAccountActivity">
+    tools:context="com.pmcoder.duermebeb.views.view.CreateAccountActivity">
 
     <include layout="@layout/toolbar"/>
 

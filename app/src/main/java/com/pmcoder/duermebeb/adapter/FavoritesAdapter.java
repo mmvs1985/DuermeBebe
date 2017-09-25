@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.database.*;
 import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.global.GlobalVariables;
-import com.pmcoder.duermebeb.interfaces.Communicator;
+import com.pmcoder.duermebeb.views.view.MainActivity;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
 import java.util.ArrayList;
 import static com.pmcoder.duermebeb.global.GlobalVariables.LOADING;
@@ -29,7 +29,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
             .getReference().child("users");
     private DatabaseReference favDatabase = databaseReference
             .child(GlobalVariables.uid).child("favorites");
-    private Communicator comm;
+    private MainActivity comm;
 
     public FavoritesAdapter(ArrayList<ElementoPlaylist> cancion, Activity activity, int recurso) {
         this.cancion = cancion;
@@ -65,12 +65,12 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
             @Override
             public void onClick(View v) {
                 if (comm == null){
-                    comm = (Communicator) activity;
+                    comm = (MainActivity) activity;
                 }
                 if (LOADING){return;}
                 String song = elementoPlaylist.getUrlsong();
                 holder.progressBar.setVisibility(View.VISIBLE);
-                GlobalVariables.viewHolder = holder.progressBar;
+                GlobalVariables.progressBar = holder.progressBar;
                 comm.setPlayingUrl(song);
             }
         });
@@ -104,7 +104,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Pict
             @Override
             public void onClick(View v) {
 
-                comm = (Communicator) activity;
+                comm = (MainActivity) activity;
 
                 if (!artistChannelDB.containsKey(elementoPlaylist.getArtist())){
                     Toast.makeText(activity, R.string.no_artist_data, Toast.LENGTH_SHORT).show();

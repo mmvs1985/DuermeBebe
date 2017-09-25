@@ -1,5 +1,8 @@
 package com.pmcoder.duermebeb.global;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.view.View;
 import com.google.firebase.database.FirebaseDatabase;
 import com.pmcoder.duermebeb.models.ElementoPlaylist;
@@ -29,19 +32,15 @@ public class GlobalVariables {
     public static Map<String, ElementoPlaylist> artistChannelDB = new HashMap<>();
     public static Map<String, ElementoPlaylist> artistSyncDB = new HashMap<>();
 
-    public static View viewHolder;
+    public static View progressBar = null, playButton = null, pauseButton = null;
 
-    public static Boolean funcionaInternet() {
+    public static Boolean isOnline(Context context) {
 
-        try {
-            Process p = Runtime.getRuntime().exec("ping -c 1 www.google.es");
+        ConnectivityManager connectivity = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-            int val = p.waitFor();
-            return (val == 0);
+        NetworkInfo networkInfo = connectivity.getActiveNetworkInfo();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+        return networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected();
     }
 }

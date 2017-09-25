@@ -5,7 +5,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-feature android:name="android.hardware.camera2" android:required="false"/>
+
+    <uses-feature
+        android:name="android.hardware.camera2"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".views.StartActivity"
+            android:name=".views.view.StartActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
@@ -26,16 +29,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".views.LoginActivity"
+            android:name=".views.view.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".views.MainActivity"
+            android:name=".views.view.MainActivityImpl"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
 
-        <receiver android:name=".views.MainActivity$PlayReceiver">
+        <receiver android:name=".views.view.MainActivityImpl$PlayReceiver">
             <intent-filter>
                 <action android:name="BROADCAST_RECEIVER" />
             </intent-filter>
@@ -43,46 +46,43 @@
 
         <service
             android:name=".services.MediaPlayerMainService"
-            android:enabled="true">
-
-        </service>
+            android:enabled="true"></service>
 
         <activity
-            android:name=".views.CreateAccountActivity"
+            android:name=".views.view.CreateAccountActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".views.LoginActivity" />
+                android:value=".views.view.LoginActivity" />
         </activity>
         <activity
-            android:name=".views.ResetPasswordActivity"
+            android:name=".views.view.ResetPasswordActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".views.LoginActivity" />
+                android:value=".views.view.LoginActivity" />
         </activity>
-        <activity android:name=".views.ProfilePicture"
+        <activity
+            android:name=".views.view.ProfilePictureActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".views.MainActivity" />
+                android:value=".views.view.MainActivityImpl" />
         </activity>
-        <provider
 
+        <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.pmcoder.duermebeb"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths">
-
-            </meta-data>
-
+                android:resource="@xml/file_paths"></meta-data>
         </provider>
+
+        <activity android:name=".views.view.FavoritesActivity"></activity>
     </application>
 
 </manifest>

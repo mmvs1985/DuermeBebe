@@ -3,11 +3,6 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:checked="true"
-            android:id="@+id/nav_inicio"
-            android:icon="@drawable/home_48"
-            android:title="@string/inicio" />
-        <item
             android:id="@+id/nav_favoritos"
             android:icon="@drawable/christmas_star_48"
             android:title="@string/favoritos" />

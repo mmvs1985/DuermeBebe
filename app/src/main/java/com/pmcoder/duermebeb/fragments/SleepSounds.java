@@ -69,9 +69,13 @@ public class SleepSounds extends Fragment {
         super.onStart();
 
         soundsDB.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 if (dataSnapshot == null) return;
+
+                GlobalVariables.databaseSoundsArray.clear();
 
                 for (DataSnapshot d: dataSnapshot.getChildren()){
                     try {
@@ -84,8 +88,8 @@ public class SleepSounds extends Fragment {
                     }
                 }
 
-                if (!GlobalVariables.databaseSoundsArray.equals(GlobalVariables.soundsArray)){
-                    GlobalVariables.soundsArray.clear();
+                if (GlobalVariables.soundsArray.size() != GlobalVariables.databaseSoundsArray.size()){
+                    GlobalVariables.soundsArray = null;
                     GlobalVariables.soundsArray = GlobalVariables.databaseSoundsArray;
 
                     adapter = new SoundsAdapter(getActivity(),

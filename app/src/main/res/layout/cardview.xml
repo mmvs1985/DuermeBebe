@@ -41,6 +41,27 @@
                     android:layout_gravity="center_horizontal|center_vertical"
                     />
 
+                <ImageView
+                    android:id="@+id/imgplay"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:scaleType="fitXY"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:src="@drawable/playcircle96"
+                    android:tint="@android:color/white"
+                    />
+
+                <ImageView
+                    android:id="@+id/imgpause"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:scaleType="fitXY"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:src="@drawable/pause_48"
+                    android:tint="@android:color/white"
+                    android:visibility="gone"
+                    />
+
             </FrameLayout>
 
 

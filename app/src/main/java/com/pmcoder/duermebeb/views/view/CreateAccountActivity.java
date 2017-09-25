@@ -1,4 +1,4 @@
-package com.pmcoder.duermebeb.views;
+package com.pmcoder.duermebeb.views.view;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -52,7 +52,7 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
                 if (user != null){
                     Log.i("SESION", "Sesión iniciada");
                     GlobalVariables.uid = user.getUid();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(), MainActivityImpl.class));
                     Toast.makeText(getApplicationContext(), "Iniciando Sesión",
                             Toast.LENGTH_LONG).show();
                 }else{
@@ -131,7 +131,7 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onFailure(@NonNull Exception e) {
 
-                if (GlobalVariables.funcionaInternet()){
+                if (GlobalVariables.isOnline(getApplicationContext())){
                     if (e.getMessage().equals(getString(R.string.CONSTANTEMAILEXISTS))){
                         Snackbar.make(v, R.string.account_alredy_exists,
                                 Snackbar.LENGTH_LONG).show();
