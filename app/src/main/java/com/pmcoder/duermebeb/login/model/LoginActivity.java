@@ -3,7 +3,6 @@ package com.pmcoder.duermebeb.login.model;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText username;
     private EditText password;
     private Button loginBtn;
-    private ImageView facebookButton;
     private LoginActivityPresenter presenter;
     private View view;
 
@@ -32,20 +30,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         presenter = new LoginActivityPresenterImpl(this);
         SharedPreferences preferences = getSharedPreferences("User-Data", Context.MODE_PRIVATE);
 
-        loginBtn = (Button) findViewById(R.id.login_button);
+        loginBtn = findViewById(R.id.login_button);
         loginBtn.setOnClickListener(this);
 
-        facebookButton = (ImageView) findViewById(R.id.facebookButton);
-
-        TextView addAccount = (TextView) findViewById(R.id.createaccount_button);
+        TextView addAccount = findViewById(R.id.createaccount_button);
         addAccount.setOnClickListener(this);
 
-        TextView resetPassword = (TextView) findViewById(R.id.recoverypassword_button);
+        TextView resetPassword = findViewById(R.id.recoverypassword_button);
         resetPassword.setOnClickListener(this);
 
-        username = (EditText) findViewById(R.id.oldusername);
+        username = findViewById(R.id.oldusername);
         username.setText(preferences.getString("EMAIL", ""));
-        password = (EditText) findViewById(R.id.oldpass);
+        password = findViewById(R.id.oldpass);
 
 
     }

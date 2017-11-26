@@ -28,7 +28,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
 
         presenter = new ResetPasswordPresenterImpl();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         try{
             getSupportActionBar().setTitle(R.string.recoverPassTitle);
@@ -39,8 +39,8 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
 
         mAuth = FirebaseAuth.getInstance();
 
-        email = (EditText) findViewById(R.id.resetPassET);
-        Button resetPass = (Button) findViewById(R.id.resetPassBtn);
+        email = findViewById(R.id.resetPassET);
+        Button resetPass = findViewById(R.id.resetPassBtn);
         resetPass.setOnClickListener(this);
 
 

@@ -21,7 +21,7 @@ public class ProfilePicFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_profile_pic, container, false);
 
-        ImageView profilePicture = (ImageView) view.findViewById(R.id.imageProfile);
+        ImageView profilePicture = view.findViewById(R.id.imageProfile);
         profilePicture.setImageBitmap(ImageUtil.convert(GlobalVariables.profileImgBase64));
 
         return view;

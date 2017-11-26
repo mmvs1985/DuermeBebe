@@ -33,10 +33,10 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
             uid = getArguments().getString("uid");
         }
 
-        CoordinatorLayout exit = (CoordinatorLayout) view.findViewById(R.id.fav_exit);
+        CoordinatorLayout exit = view.findViewById(R.id.fav_exit);
         exit.setOnClickListener(this);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.fav_recyclerview);
+        recyclerView = view.findViewById(R.id.fav_recyclerview);
 
         LinearLayoutManager linearLayout = new LinearLayoutManager(getContext());
         linearLayout.setOrientation(LinearLayout.VERTICAL);

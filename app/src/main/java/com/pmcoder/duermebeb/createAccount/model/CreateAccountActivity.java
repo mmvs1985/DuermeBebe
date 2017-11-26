@@ -12,7 +12,6 @@ import com.pmcoder.duermebeb.R;
 import com.pmcoder.duermebeb.createAccount.presenter.CreateAccountPresenter;
 import com.pmcoder.duermebeb.createAccount.presenter.CreateAccountPresenterImpl;
 import com.pmcoder.duermebeb.login.model.LoginActivity;
-import com.pmcoder.duermebeb.main.model.MainActivityImpl;
 
 public class CreateAccountActivity extends AppCompatActivity implements View.OnClickListener,
 CreateAccountActivityInt{
@@ -28,7 +27,7 @@ CreateAccountActivityInt{
 
         presenter = new CreateAccountPresenterImpl(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         try{
             getSupportActionBar().setTitle(R.string.createAccount);
@@ -37,11 +36,11 @@ CreateAccountActivityInt{
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        etEmail = (TextInputEditText) findViewById(R.id.newemail);
-        etName = (TextInputEditText) findViewById(R.id.newname);
-        etPassword = (TextInputEditText) findViewById(R.id.newpassword);
-        etConfPassword = (TextInputEditText) findViewById(R.id.newconfPassword);
-        Button joinUs = (Button) findViewById(R.id.joinUs);
+        etEmail = findViewById(R.id.newemail);
+        etName = findViewById(R.id.newname);
+        etPassword = findViewById(R.id.newpassword);
+        etConfPassword = findViewById(R.id.newconfPassword);
+        Button joinUs = findViewById(R.id.joinUs);
         joinUs.setOnClickListener(this);
     }
 

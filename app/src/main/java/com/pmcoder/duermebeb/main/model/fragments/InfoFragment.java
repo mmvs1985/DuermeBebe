@@ -38,21 +38,21 @@ public class InfoFragment extends Fragment implements View.OnClickListener{
             song = getArguments().getString("song");
         }
 
-        TextView artist = (TextView) v.findViewById(R.id.artistcardinfo);
+        TextView artist = v.findViewById(R.id.artistcardinfo);
         artist.setText(autor);
-        TextView songTV = (TextView) v.findViewById(R.id.songcardinfo);
+        TextView songTV = v.findViewById(R.id.songcardinfo);
         songTV.setText(song);
-        TextView web = (TextView) v.findViewById(R.id.urlweb);
+        TextView web = v.findViewById(R.id.urlweb);
         web.setText(GlobalVariables.web);
         web.setOnClickListener(this);
-        TextView soundcloud = (TextView) v.findViewById(R.id.urlsoundcloud);
+        TextView soundcloud = v.findViewById(R.id.urlsoundcloud);
         soundcloud.setText(GlobalVariables.soundcloud);
         soundcloud.setOnClickListener(this);
-        TextView youtube = (TextView) v.findViewById(R.id.urlyoutube);
+        TextView youtube = v.findViewById(R.id.urlyoutube);
         youtube.setText(GlobalVariables.youtube);
         youtube.setOnClickListener(this);
 
-        CoordinatorLayout exit = (CoordinatorLayout) v.findViewById(R.id.exit);
+        CoordinatorLayout exit = v.findViewById(R.id.exit);
         exit.setOnClickListener(this);
 
         return v;

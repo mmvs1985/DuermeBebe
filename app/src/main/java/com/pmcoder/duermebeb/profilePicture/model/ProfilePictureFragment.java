@@ -54,10 +54,10 @@ public class ProfilePictureFragment extends AppCompatActivity implements View.On
                 .child("users")
                 .child(uid);
 
-        ImageView cam = (ImageView) findViewById(R.id.cam);
-        profilePic = (CircleImageView) findViewById(R.id.profilepic);
-        TextView username = (TextView) findViewById(R.id.username);
-        TextView usermail = (TextView) findViewById(R.id.usermail);
+        ImageView cam = findViewById(R.id.cam);
+        profilePic = findViewById(R.id.profilepic);
+        TextView username = findViewById(R.id.username);
+        TextView usermail = findViewById(R.id.usermail);
 
         if (GlobalVariables.profileImgBase64 != null && !GlobalVariables.profileImgBase64.equals("")){
 
@@ -74,7 +74,7 @@ public class ProfilePictureFragment extends AppCompatActivity implements View.On
             usermail.setText(userEmail);
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.profileTitle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

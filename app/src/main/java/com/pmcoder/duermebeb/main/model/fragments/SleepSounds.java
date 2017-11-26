@@ -64,7 +64,7 @@ public class SleepSounds extends Fragment {
                 "Cargando Elementos", null, null));
         MainActivityRepositoryImpl.soundsArray = arrayList;
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.soundsrecycler);
+        recyclerView = view.findViewById(R.id.soundsrecycler);
 
         GridLayoutManager grid = new GridLayoutManager(getContext(),
                 2, GridLayout.VERTICAL, false);

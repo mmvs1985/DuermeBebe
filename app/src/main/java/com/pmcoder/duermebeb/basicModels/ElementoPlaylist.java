@@ -10,18 +10,6 @@ public class ElementoPlaylist {
     private String like = "false";
     private String icon;
 
-
-    public ElementoPlaylist(String artist, String name, String urlsong, String like, String icon, String soundcloud, String youtube, String web) {
-        this.artist = artist;
-        this.name = name;
-        this.urlsong = urlsong;
-        this.soundcloud = soundcloud;
-        this.youtube = youtube;
-        this.web = web;
-        this.like = like;
-        this.icon = icon;
-    }
-
     public ElementoPlaylist(String artist, String name, String urlsong, String like, String icon) {
         this.artist = artist;
         this.name = name;

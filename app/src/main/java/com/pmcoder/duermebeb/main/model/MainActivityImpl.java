@@ -46,37 +46,37 @@ public class MainActivityImpl extends AppCompatActivity implements MainActivity,
 
         presenter = new MainActivityPresenterImpl(this);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
 
         preferences = getSharedPreferences("User-Data", Context.MODE_PRIVATE);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarmain);
+        Toolbar toolbar = findViewById(R.id.toolbarmain);
         setSupportActionBar(toolbar);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = findViewById(R.id.viewpager);
         loadViewPager(viewPager);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
+        TabLayout tabLayout = findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
 
-        TextView username = (TextView) navigationView.
+        TextView username = navigationView.
                 getHeaderView(0).findViewById(R.id.usernavname);
-        TextView mail = (TextView) navigationView.
+        TextView mail = navigationView.
                 getHeaderView(0).findViewById(R.id.usernavmail);
         String saludo = getString(R.string.hi)
                 + " "
                 + preferences.getString("NAME", "Usuario");
 
-        playButton = (ImageView) findViewById(R.id.imgplay);
-        pauseButton = (ImageView) findViewById(R.id.imgpause);
+        playButton = findViewById(R.id.imgplay);
+        pauseButton = findViewById(R.id.imgpause);
 
         presenter.setTabIcons(tabLayout);
         presenter.setIconColor(tabLayout
                 .getTabAt(tabLayout.getSelectedTabPosition()), "#FFFFFF");
 
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.main_bottomnavigation);
+        bottomNavigationView = findViewById(R.id.main_bottomnavigation);
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this,
                 drawer,
@@ -179,7 +179,7 @@ public class MainActivityImpl extends AppCompatActivity implements MainActivity,
             }
         });
 
-        profilePicture = (ImageView) navigationView
+        profilePicture = navigationView
                 .getHeaderView(0)
                 .findViewById(R.id.imgprofile);
         profilePicture.setOnClickListener(this);

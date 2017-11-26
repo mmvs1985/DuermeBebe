@@ -10,11 +10,8 @@ import android.view.*;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.pmcoder.duermebeb.R;
-import com.pmcoder.duermebeb.basicModels.ElementoPlaylist;
 import com.pmcoder.duermebeb.main.adapter.MainAdapter;
 import com.pmcoder.duermebeb.main.repository.MainActivityRepositoryImpl;
-
-import java.util.ArrayList;
 
 public class MainFragment extends Fragment {
 
@@ -37,7 +34,7 @@ public class MainFragment extends Fragment {
             Log.i("UID: ", uid);
         }
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+        recyclerView = view.findViewById(R.id.recyclerview);
 
         LinearLayoutManager linearLayout = new LinearLayoutManager(getContext());
         linearLayout.setOrientation(LinearLayout.VERTICAL);

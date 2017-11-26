@@ -23,7 +23,7 @@ public class StartActivity extends AppCompatActivity implements StartActivityInt
 
         Typeface font = Typeface.createFromAsset(getAssets(), "font/BABYCAKE.ttf");
 
-        final TextView title = (TextView) findViewById(R.id.startmaintitle);
+        final TextView title = findViewById(R.id.startmaintitle);
         title.setTypeface(font);
 
     }
