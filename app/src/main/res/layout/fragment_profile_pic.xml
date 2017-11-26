@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.pmcoder.duermebeb.fragments.ProfilePic">
+    tools:context=".profilePicture.model.fragments.ProfilePicFragment">
 
     <ImageView
         android:id="@+id/imageProfile"

@@ -52,4 +52,27 @@
     <string name="email">Correo Electrónico:</string>
     <string name="notprofilepic">Aún no tienes foto de Perfil</string>
     <string name="sounds">sonidos</string>
+    <string name="confirmEmail">Debes confirmar tu email</string>
+    <string name="welcome">Bienvenid@!!</string>
+    <string name="hello">Hola</string>
+    <string name="connectionFailed">Revisa tu conexión, se registran problemas técnicos</string>
+    <string name="wrongUsernameOrPassword">Usuario o Contraseña incorrectos</string>
+    <string name="createAccount">Crear Cuenta</string>
+    <string name="favAdded">Favorito agregado</string>
+    <string name="favDeleted">Favorito eliminado</string>
+    <string name="requiredData">Dato requerido</string>
+    <string name="wrongMail">Correo erróneo</string>
+    <string name="tooShort">La contraseña debe ser mayor a seis caracteres</string>
+    <string name="differentPasswords">Tus contraseñas no coinciden</string>
+    <string name="reviewThat">Revisa estos datos</string>
+    <string name="User">Usuario</string>
+    <string name="userNotExistsError">There is no user record corresponding to this identifier</string>
+    <string name="userNotExists">El usuario no existe</string>
+    <string name="putEmailHere">Coloca tu correo electrónico aquí</string>
+    <string name="reviewEmailAccount">Revisa tu correo electrónico para recuperar tu cuenta</string>
+    <string name="wrongEmail">Dirección de correo errónea</string>
+    <string name="emailNotExists">Ups! Probablemente cu cuenta no existe</string>
+    <string name="recoverPassTitle">Recuperar contraseña</string>
+    <string name="loadingElements">Cargando elementos</string>
+    <string name="appStoreUrl">https://play.google.com/store/apps/details?id=com.pmcoder.duermebeb</string>
 </resources>

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#d8000000"
-    tools:context="com.pmcoder.duermebeb.fragments.InfoFragment">
+    tools:context=".main.model.fragments.InfoFragment">
 
     <android.support.v7.widget.CardView
         android:id="@+id/infoCardView"

@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".views.view.StartActivity"
+            android:name=".start.model.StartActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
@@ -29,47 +29,43 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".views.view.LoginActivity"
+            android:name=".login.model.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".views.view.MainActivityImpl"
+            android:name=".main.model.MainActivityImpl"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
 
-        <receiver android:name=".views.view.MainActivityImpl$PlayReceiver">
-            <intent-filter>
-                <action android:name="BROADCAST_RECEIVER" />
-            </intent-filter>
-        </receiver>
-
         <service
-            android:name=".services.MediaPlayerMainService"
-            android:enabled="true"></service>
+            android:name=".main.service.MediaPlayerMainService"
+            android:enabled="true">
+
+        </service>
 
         <activity
-            android:name=".views.view.CreateAccountActivity"
+            android:name=".createAccount.model.CreateAccountActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".views.view.LoginActivity" />
+                android:value=".login.model.LoginActivity" />
         </activity>
         <activity
-            android:name=".views.view.ResetPasswordActivity"
+            android:name=".resetPassword.model.ResetPasswordActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".views.view.LoginActivity" />
+                android:value=".login.model.LoginActivity" />
         </activity>
         <activity
-            android:name=".views.view.ProfilePictureActivity"
+            android:name=".profilePicture.model.ProfilePictureFragment"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".views.view.MainActivityImpl" />
+                android:value=".main.model.MainActivityImpl" />
         </activity>
 
         <provider
@@ -82,7 +78,7 @@
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
 
-        <activity android:name=".views.view.FavoritesActivity"></activity>
+        <activity android:name=".favorites.model.FavoritesActivity"></activity>
     </application>
 
 </manifest>
